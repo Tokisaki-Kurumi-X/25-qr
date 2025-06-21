@@ -1,6 +1,13 @@
 #development environment
 server:
   port: 8080
+  ssl:
+    enabled: true
+    key-store: classpath:keystore.p12
+    key-store-password: Qianhun
+    key-store-type: PKCS12
+    key-alias: qianhun
+
 
 spring:
   datasource:
