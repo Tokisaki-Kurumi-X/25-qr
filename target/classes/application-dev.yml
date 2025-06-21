@@ -1,0 +1,17 @@
+#development environment
+server:
+  port: 8080
+
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/${database.name}
+    username: qianhun
+    password: 123456
+    driver: com.mysql.cj.jdbc.Driver
+    options: ?useUnicode=true&characterEncoding=utf-8&useSSL=false
+
+database:
+  name: dev
+
+tableName: #拼写sql语句时表名更直观
+  testPath: forTest
