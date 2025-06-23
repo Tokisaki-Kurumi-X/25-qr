@@ -21,4 +21,10 @@ public class testContoller {
     public JSONObject testPath() throws SQLException, ClassNotFoundException {
         return testservice.testPath();
     }
+    @RequestMapping("/centos")
+    public JSONObject testCentos(){
+        JSONObject json=new JSONObject();
+        json.put("code",000);
+        return json;
+    }
 }
