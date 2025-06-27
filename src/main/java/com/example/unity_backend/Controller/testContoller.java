@@ -3,11 +3,12 @@ package com.example.unity_backend.Controller;
 import com.alibaba.fastjson.JSONObject;
 import com.example.unity_backend.Service.testService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.sql.SQLException;
-
+@Profile("test")
 @RestController
 public class testContoller {
     private final testService testservice;

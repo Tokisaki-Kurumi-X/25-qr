@@ -16,13 +16,19 @@ import java.util.List;
         private static final long TOKEN_EXPIRE = 24*60*60*1000;
         //设置一个密钥\私钥,为了安全需要定期更换
         //对称密钥
-        private static final String TOKEN_SECRET_KEY = "Ronin";
+        private static final String TOKEN_SECRET_KEY = "nfjkfjslljsgjoajjfoisjfsjlkjfskl";
 
+        public JSONObject generateJson(String username,String audience){
+            JSONObject json=new JSONObject();
+            json.put("Username",username);
+            json.put("Audience",audience);
+            return json;
+        }
 
         //未指定实体，通用接口
         public  String generateToken(JSONObject json) throws Exception {
             //****测试用数据开始
-            String username="qianhun";
+            String username="qianhun";//username是发起人
             //实际从json获取数据
             //String **=json.getString()
             //此处应从数据库或者Redis查询
@@ -30,7 +36,7 @@ import java.util.List;
             roles.add("ROLE_ADMIN");
             roles.add("ROLE_TESTUSER");
 
-            Claims claim= Jwts.claims().setSubject(username);
+            Claims claim= Jwts.claims().setSubject(json.getString("Username"));
             claim.put("roles",roles);
             //****测试用数据结束
             Date now = new Date();
@@ -46,7 +52,7 @@ import java.util.List;
                     .setExpiration(exp)
                     .setClaims(claim)
                     //.setSubject(json.getString("account"))//主体
-                    .setAudience("postman")//平台
+                    .setAudience(json.getString("Audience"))//平台
                     .setIssuer("QIANHUN")
                     .claim("server_name","qianhun")
                     //.claim("roles","Admin")

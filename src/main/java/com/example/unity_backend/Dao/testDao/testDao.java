@@ -5,10 +5,11 @@ import com.example.unity_backend.Dao.Db.Db;
 import com.example.unity_backend.Utils.LogUtils.LogUtil;
 import com.example.unity_backend.Utils.SqlUtils.SqlGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import java.sql.SQLException;
-
+@Profile("test")
 @Component
 public class testDao {
     private Db db;
