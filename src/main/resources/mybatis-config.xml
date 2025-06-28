@@ -16,5 +16,6 @@
     </environments>
     <mappers>
         <mapper resource="DaoMapper/User/Login/LoginMapper.xml"/>
+        <mapper resource="DaoMapper/User/Register/RegisterMapper.xml"/>
     </mappers>
 </configuration>
