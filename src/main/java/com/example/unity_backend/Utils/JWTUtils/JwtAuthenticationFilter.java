@@ -62,7 +62,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (header == null || header.isEmpty()) {
             LogUtil.showDebug("[Filter]required header");
             res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            res.getWriter().write("Missing Authorization header");
+            res.getWriter().write("[Filter]Missing Authorization header");
             return;
         }
         if (header != null) {// && header.startsWith("Bearer ")

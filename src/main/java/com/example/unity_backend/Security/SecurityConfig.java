@@ -37,6 +37,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //                .antMatchers("/page1/**").hasAuthority("ROLE_LEVEL1")
 //                .antMatchers("/page2/**").hasAuthority("ROLE_LEVEL2")
 //                .antMatchers("/page3/**").hasAuthority("ROLE_LEVEL3")
+                .antMatchers("/admin").hasAnyAuthority("ROLE_ADMIN")
                 .anyRequest().authenticated()
                 .and()
                 // 把 JWT 过滤器加到 Spring Security 过滤链
