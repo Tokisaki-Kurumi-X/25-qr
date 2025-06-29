@@ -21,7 +21,12 @@ public class Mybatis{
     public void setSqlSession(SqlSession sqlSession) {
         this.sqlSession = sqlSession;
     }
-
+    public void closeSqlSession() {
+        if (this.sqlSession != null) {
+            this.sqlSession.commit();  // 提交事务
+            this.sqlSession.close();   // 关闭 session
+        }
+    }
 
     @Value("${mybatis.resource}")
     private  String resource;

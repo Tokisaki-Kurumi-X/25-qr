@@ -25,6 +25,7 @@ public class LoginController {
 
     @PostMapping("/verify/password")
     public JSONObject VerifyPassword(@RequestBody JSONObject user) throws Exception {
+        //前端存储邮箱，需要前端保持正确性
         //LogUtil.showDebug(user.toString());
         return  loginService.VerifyPassword(user);
     }

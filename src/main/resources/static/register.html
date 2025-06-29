@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>注册页面</title>
+    <script src="/webjars/jquery/3.7.1/jquery.js"></script>
+</head>
+<body>
+    <input id="username" placeholder="请输入用户名">
+    <button id="verifyName">检查用户名是否可用</button>
+    <input id="mail" placeholder="请输入您的邮箱">
+    <button id="verifyMail">检查邮箱是否可用</button>
+    <button id="sendCode">发送验证码</button>
+    <input id="code" placeholder="请输入验证码">
+    <button id="verifyCode">验证</button>
+    <input id="password" placeholder="请输入密码">
+    <button id="register" >注册</button>
+</body>
+</html>
+<script type="text/javascript">
+    $(window).on("load",function () {
+       console.log("ready");
+       initEL();
+    });
+
+    $("#verifyName").click(function () {
+        var username=$("#username").val();
+        if(!username) {
+            alert("null");
+            return;
+        }
+        $.ajax({
+            url:"/register/verify/username",
+            method:"post",
+            contentType: "application/json; charset=UTF-8",  // 告诉服务器请求体是 JSON
+            dataType: "json",
+            data:JSON.stringify({
+               "username":username
+            }),
+            success:function (res) {
+                console.log(res);
+                if(res.isExist==="false"){
+                    if(confirm("账户名未注册，确定使用这个账户名吗")){
+                        $("#username").prop("disabled",true);
+                        $("#verifyName").prop("disabled",true);
+                        $("#mail").prop("disabled",false);
+                        $("#verifyMail").prop("disabled",false);
+                    }else {
+
+                    }
+
+                }else {
+                    alert("已注册");
+                }
+            },
+            err:function (err) {
+                console.log(err);
+            }
+        });
+        //$("#username").prop("disabled",true);
+    });
+
+    $("#verifyMail").click(function () {
+        var mail=$("#mail").val();
+        if(!mail) {
+            alert("null");
+            return;
+        }
+        $.ajax({
+            url:"/register/verify/mail",
+            method:"post",
+            contentType: "application/json; charset=UTF-8",  // 告诉服务器请求体是 JSON
+            dataType: "json",
+            data:JSON.stringify({
+                "mail":mail
+            }),
+            success:function (res) {
+                console.log(res);
+                if(res.isExist==="false"){
+                    if(confirm("邮箱未注册，确定使用这个邮箱吗")){
+                        $("#mail").prop("disabled",true);
+                        $("#verifyMail").prop("disabled",true);
+                        $("#sendCode").prop("disabled",false);
+                    }else {
+
+                    }
+
+                }else {
+                    alert("邮箱已注册");
+                }
+            },
+            err:function (err) {
+                console.log(err);
+            }
+        });
+    });
+
+    $("#sendCode").click(function () {
+        $.ajax({
+            url: "/register/mail/code",
+            method: "post",
+            contentType: "application/json; charset=UTF-8",  // 告诉服务器请求体是 JSON
+            dataType: "json",
+            data: JSON.stringify({
+                "mailAddress": $("#mail").val(),
+            }),
+            success: function (res) {
+                console.log(res);
+                if (res.status === "success") {
+                    alert("已经发送");
+
+                    $("#sendCode").prop("disabled",true);
+                    $("#code").prop("disabled",false);
+                    $("#verifyCode").prop("disabled",false);
+                } else {
+
+                }
+            },
+            error: function(xhr, status, error) {
+                alert("邮箱错误，请重新输入");
+               // console.log("错误信息：", xhr.responseText);  // 查看服务器返回的错误信息
+                //console.log("状态码：", status);
+                //console.log("错误类型：", error);
+                $("#mail").prop("disabled",false);
+                $("#verifyMail").prop("disabled",false);
+                $("#sendCode").prop("disabled",true);
+            }
+        })
+    });
+
+    $("#verifyCode").click(function () {
+        var code=$("#code").val();
+        if (!code){
+            alert("null");
+            return;
+        }
+        $.ajax({
+            url:"/register/verify/code",
+            method:"post",
+            contentType: "application/json; charset=UTF-8",  // 告诉服务器请求体是 JSON
+            dataType: "json",
+            data:JSON.stringify({
+                "code":code,
+                "mailAddress":$("#mail").val(),
+            }),
+            success:function (res) {
+                console.log(res);
+                if(res.isMatch==="true"){
+                    alert("验证成功");
+                    $("#code").prop("disabled",true);
+                    $("#verifyCode").prop("disabled",true);
+                    $("#password").prop("disabled",false);
+                    $("#register").prop("disabled",false);
+                }
+            },
+            fail:function (err) {
+
+            }
+        })
+    });
+
+    $("#register").click(function () {
+        var password=$("#password").val();
+        if (!password){
+            alert("null");
+            return;
+        }
+        $.ajax({
+            url:"",
+            method:"post",
+            contentType: "application/json; charset=UTF-8",  // 告诉服务器请求体是 JSON
+            dataType: "json",
+            data:JSON.stringify({
+                "username":$("#username").val(),
+                "mailAddress":$("#mail").val(),
+                "password":$("#password").val(),
+            }),
+            success:function (res) {
+                console.log(res);
+            },
+            error:function (err) {
+
+            }
+        })
+    })
+    function initEL() {
+        $("#mail").prop("disabled",true);
+        $("#verifyMail").prop("disabled",true);
+        $("#sendCode").prop("disabled",true);
+        $("#code").prop("disabled",true);
+        $("#password").prop("disabled",true);
+        $("#verifyCode").prop("disabled",true);
+        $("#register").prop("disabled",true);
+    }
+</script>

@@ -1,8 +1,13 @@
 package com.example.unity_backend.Dao.User.Register;
 
 import com.example.unity_backend.Entity.User;
+import com.example.unity_backend.Entity.VerifyCode;
+
+import java.util.Date;
 
 public interface RegisterMapper {
     User getUserByUserName(String username);
-    User getUserByMailAddress(String mail);
+    VerifyCode getUserByMailAddress(String mail);
+    VerifyCode getVerifyCodebyMail(String mail);
+    int upsertVerifyCode(String mail,String code,Date expire);
 }

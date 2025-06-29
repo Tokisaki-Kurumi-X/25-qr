@@ -11,7 +11,24 @@
         select <include refid="baseColumn"/> from users where Username= #{username}
     </select>
 
-    <select id="getUserByMailAddress" resultType="com.example.unity_backend.Entity.User">
-        select <include refid="baseColumn"/> from users where MailAddress= #{mail}
+    <select id="getUserByMailAddress" resultType="com.example.unity_backend.Entity.VerifyCode">
+        select * from verifycode where MailAddress= #{mail}
+    </select>
+
+
+
+    <insert id="upsertVerifyCode" parameterType="map">
+        INSERT INTO verifycode
+        (MailAddress, Code, ExpiresAt, MailStatus)
+        VALUES
+        (#{mail}, #{code}, #{expire, jdbcType=TIMESTAMP}, 1)
+        ON DUPLICATE KEY UPDATE
+        Code      = VALUES(Code),
+        ExpiresAt = VALUES(ExpiresAt),
+        MailStatus= 1
+    </insert>
+
+    <select id="getVerifyCodebyMail" resultType="com.example.unity_backend.Entity.VerifyCode">
+        select * from verifycode where MailAddress= #{mail}
     </select>
 </mapper>

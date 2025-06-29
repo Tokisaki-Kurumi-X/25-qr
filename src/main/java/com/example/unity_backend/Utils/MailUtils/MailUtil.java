@@ -1,5 +1,6 @@
 package com.example.unity_backend.Utils.MailUtils;
 
+import com.alibaba.fastjson.JSONObject;
 import com.example.unity_backend.Utils.LogUtils.LogUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,6 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import javax.mail.MessagingException;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
 import java.util.Date;
 @Service
 public class MailUtil {
@@ -36,11 +39,12 @@ public class MailUtil {
         }
     }
 
-    public void sendTextMailMessage(String to,String subject,String text){
-
+    public JSONObject sendTextMailMessage(String to, String subject, String text) {
+        checkMail(to, subject, text);
+        JSONObject json = new JSONObject();
         try {
             //true 代表支持复杂的类型
-            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(javaMailSender.createMimeMessage(),true);
+            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(javaMailSender.createMimeMessage(), true);
             //邮件发信人
             mimeMessageHelper.setFrom(sendMailer);
             //邮件收信人 1或多个
@@ -54,14 +58,15 @@ public class MailUtil {
 
             //发送邮件
             javaMailSender.send(mimeMessageHelper.getMimeMessage());
-            LogUtil.showDebug("发送邮件成功："+sendMailer+"->"+to);
-
+            LogUtil.showDebug("发送邮件成功：" + sendMailer + "->" + to);
+            json.put("send_status", "success");
         } catch (MessagingException e) {
             e.printStackTrace();
-            LogUtil.showDebug("发送邮件失败："+e.getMessage());
+            LogUtil.showDebug("发送邮件失败：" + e.getMessage());
+            json.put("send_status", "fail");
+            json.put("err", e.getMessage());
         }
+        return json;
     }
-
-
 
 }
