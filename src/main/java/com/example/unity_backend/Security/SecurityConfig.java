@@ -1,6 +1,7 @@
 package com.example.unity_backend.Security;
 
 
+import com.example.unity_backend.Utils.ConfigUtils.Whitelist;
 import com.example.unity_backend.Utils.JWTUtils.JwtAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -19,9 +20,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private JwtAuthenticationFilter jwtFilter;
 
+    private String[] patterns;
     @Autowired
-    public SecurityConfig(JwtAuthenticationFilter filter){
+    public SecurityConfig(JwtAuthenticationFilter filter,Whitelist whitelist1){
         this.jwtFilter=filter;
+        this.patterns=whitelist1.getPatterns().toArray(new String[0]);
     }
 
     @Override
@@ -32,7 +35,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 // 登录接口、静态资源放行
-                .antMatchers("/login.html", "/static/**","/registered","/login","/webjars/**","/redis","/test/**").permitAll()
+                .antMatchers(patterns).permitAll()
 //                // 根据 Authority（无 ROLE_ 前缀）做权限控制
 //                .antMatchers("/page1/**").hasAuthority("ROLE_LEVEL1")
 //                .antMatchers("/page2/**").hasAuthority("ROLE_LEVEL2")

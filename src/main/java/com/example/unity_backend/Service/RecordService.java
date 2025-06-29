@@ -26,13 +26,15 @@ public class RecordService {
 
     public JSONObject newRecord(GameRecord gameRecord){
         res.clear();
-        //LogUtil.showDebug(request.getHeader("Authorization").toString());
+        //init
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username=null;
-        if (authentication != null) {
-            username = authentication.getName();
-        }
-        LogUtil.showDebug(username);
+        String username = authentication.getName();//Filter已做校验，不会空
+        gameRecord.setUsername(username);
+        //LogUtil.showDebug(gameRecord.toString());
+        //new
+
+        //update
+
         return res;
     }
 }

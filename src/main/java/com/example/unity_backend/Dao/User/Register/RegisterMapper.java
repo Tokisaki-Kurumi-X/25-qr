@@ -10,7 +10,7 @@ public interface RegisterMapper {
     VerifyCode getUserByMailAddress(String mail);
     VerifyCode getVerifyCodebyMail(String mail);
     int upsertVerifyCode(String mail,String code,Date expire);
-    void newUser(String name,String mail,String password);
+    int newUser(String name,String mail,String password);
     void newUserRole(String username,String roleid);
     void mailConfirm(String mail);
 }

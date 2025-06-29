@@ -40,4 +40,5 @@ public class Mybatis{
         //LogUtil.showDebug("mybatis.class: openSession successfully");
     }
 
+
 }

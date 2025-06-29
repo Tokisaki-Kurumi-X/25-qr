@@ -20,7 +20,7 @@ public class RecordController {
     }
     @PostMapping("/new")
     public JSONObject newGameRecord(@RequestBody GameRecord gameRecord){
-        recordService.newRecord(gameRecord);
-        return  null;
+        return recordService.newRecord(gameRecord);
+
     }
 }

@@ -9,8 +9,7 @@ import java.util.List;
 public class Whitelist {
     private  final List<String> patterns = Arrays.asList(
             "/login",
-            "/registered",
-            "/api/product/**",
+            "/register/**",
             "/static/**",
             "/webjars/**",
             "/login.html",
@@ -18,7 +17,8 @@ public class Whitelist {
             "/test/**",
             // 如果后续有更多路径，只要加到这里就行
             "/public/**",
-            "/health"
+            "/register.html"
+
     );
 
     public List<String> getPatterns() {

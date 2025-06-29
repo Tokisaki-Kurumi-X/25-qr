@@ -41,6 +41,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         boolean allowed =whitelist.getPatterns().stream()
                 .anyMatch(pattern -> pathMatcher.match(pattern, path));
         //Log.showDebug("[shoudnnotfilete]"+String.valueOf(allowed));
+        if(allowed) LogUtil.showDebug("[Filter]In whitelist");
         return allowed;
     }
 
@@ -65,13 +66,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             res.getWriter().write("[Filter]Missing Authorization header");
             return;
         }
-        if (header != null) {// && header.startsWith("Bearer ")
+        if (header != null) {
+            // && header.startsWith("Bearer ")
             //String token = header.substring(7);
             String token=header;
+            if(!jwtUtil.isValidToken(token)){
+                return;
+            }
             //LogUtil.showDebug("token is \""+token+"\"");
             try {
                 Claims claims = jwtUtil.parseToken(token);
                 String username = claims.getSubject();
+                if(username==null){
+                    return;
+                }
                 List<GrantedAuthority> authorities = jwtUtil.getAuthorities(claims);
                 Authentication auth = new UsernamePasswordAuthenticationToken(
                         username, null, authorities);

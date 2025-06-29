@@ -108,7 +108,6 @@
                 console.log(res);
                 if (res.status === "success") {
                     alert("已经发送");
-
                     $("#sendCode").prop("disabled",true);
                     $("#code").prop("disabled",false);
                     $("#verifyCode").prop("disabled",false);
@@ -151,6 +150,11 @@
                     $("#verifyCode").prop("disabled",true);
                     $("#password").prop("disabled",false);
                     $("#register").prop("disabled",false);
+                }else {
+                    alert("验证失败");
+                    $("#sendCode").prop("disabled",false);
+                    $("#code").prop("disabled",true);
+                    $("#verifyCode").prop("disabled",true);
                 }
             },
             fail:function (err) {
@@ -166,7 +170,7 @@
             return;
         }
         $.ajax({
-            url:"",
+            url:"/register/new",
             method:"post",
             contentType: "application/json; charset=UTF-8",  // 告诉服务器请求体是 JSON
             dataType: "json",
