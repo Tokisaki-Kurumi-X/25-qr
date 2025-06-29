@@ -34,7 +34,7 @@ public class RegisterController {
         }
 
         @PostMapping("/new")
-        public JSONObject registerNewUser(@RequestBody User user){
+        public JSONObject registerNewUser(@RequestBody User user) throws IOException {
                 return registerService.registerNewUser(user);
         }
 

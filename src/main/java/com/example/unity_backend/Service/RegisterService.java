@@ -9,6 +9,7 @@ import com.example.unity_backend.Utils.LogUtils.LogUtil;
 import com.example.unity_backend.Utils.MailUtils.MailUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.Date;
@@ -56,9 +57,18 @@ public class RegisterService {
         return res;
     }
 
-    public JSONObject registerNewUser(User user) {
+
+    public JSONObject registerNewUser(User user) throws IOException {
         res.clear();
         //mailUtil.sendTextMailMessage("2259532295@qq.com","test","codeVerify");
+        LogUtil.showDebug(user.toString());
+        //user
+        registerDao.newUser(user);
+        //role
+        registerDao.newUserRole(user);
+        //mail
+        registerDao.mailConfirm(user);
+        res.put("status","success");
         return res;
     }
 

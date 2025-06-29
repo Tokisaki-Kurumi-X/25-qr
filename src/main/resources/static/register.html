@@ -117,7 +117,7 @@
                 }
             },
             error: function(xhr, status, error) {
-                alert("邮箱错误，请重新输入");
+                alert("验证码发送失败，请检查邮箱信息");
                // console.log("错误信息：", xhr.responseText);  // 查看服务器返回的错误信息
                 //console.log("状态码：", status);
                 //console.log("错误类型：", error);
@@ -177,6 +177,7 @@
             }),
             success:function (res) {
                 console.log(res);
+                alert("注册成功");
             },
             error:function (err) {
 

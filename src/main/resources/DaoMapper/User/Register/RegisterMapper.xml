@@ -28,7 +28,27 @@
         MailStatus= 1
     </insert>
 
+    <insert id="newUser">
+        Insert into users
+        (MailAddress,Username,Password)
+        values
+        (#{mail},#{name},#{password})
+    </insert>
+
+    <insert id="newUserRole">
+        Insert into userroles
+        (Username,RoleID)
+        values
+        (#{username},#{roleid})
+    </insert>
+
     <select id="getVerifyCodebyMail" resultType="com.example.unity_backend.Entity.VerifyCode">
         select * from verifycode where MailAddress= #{mail}
     </select>
+
+    <update id="mailConfirm">
+        update verifycode
+        set MailStatus='3'
+        where MailAddress=#{mail}
+    </update>
 </mapper>

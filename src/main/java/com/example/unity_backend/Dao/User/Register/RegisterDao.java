@@ -64,4 +64,22 @@ public class RegisterDao {
         closeDB();
         return a;
     }
+
+    public void newUser(User user) throws IOException {
+        openDB();
+        registerMapper.newUser(user.getUsername(),user.getMailAddress(),user.getPassword());
+        closeDB();
+    }
+
+    public void newUserRole(User user) throws IOException {
+        openDB();
+        registerMapper.newUserRole(user.getUsername(),"1");
+        closeDB();
+    }
+
+    public void mailConfirm(User user) throws IOException {
+        openDB();
+        registerMapper.mailConfirm(user.getMailAddress());
+        closeDB();
+    }
 }

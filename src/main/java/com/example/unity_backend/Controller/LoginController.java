@@ -29,4 +29,9 @@ public class LoginController {
         //LogUtil.showDebug(user.toString());
         return  loginService.VerifyPassword(user);
     }
+
+    @PostMapping("/reset")
+    public JSONObject resetPassword(@RequestBody User user){
+        return  null;
+    }
 }
