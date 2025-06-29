@@ -3,11 +3,14 @@ package com.example.unity_backend.Utils.JWTUtils;
 import com.alibaba.fastjson.JSONObject;
 import com.example.unity_backend.Utils.LogUtils.LogUtil;
 import io.jsonwebtoken.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
     public class JWTUtil {
@@ -107,13 +110,21 @@ import java.util.List;
         }
         //配合上面的解析函数使用
 
-//        public List<GrantedAuthority> getAuthorities(Claims claims) {
-//            List<String> roles = (List<String>) claims.get("roles");
-//            showDebug("roles is"+roles);
-//            return roles.stream()
-//                    .map(SimpleGrantedAuthority::new)
-//                    .collect(Collectors.toList());
-//        }
-        //可加入不同的getter
+        public List<GrantedAuthority> getAuthorities(Claims claims) {
+            List<String> roles = (List<String>) claims.get("roles");
+            //LogUtil.showDebug("roles is"+roles);
+            return roles.stream()
+                    .map(SimpleGrantedAuthority::new)
+                    .collect(Collectors.toList());
+        }
+    //可加入不同的getter
+
+
+    public String getUsernameFromToken(String token) {
+            String username;
+            Claims claims=parseToken(token);
+            username=claims.getSubject();
+            return username;
+    }
 
     }
