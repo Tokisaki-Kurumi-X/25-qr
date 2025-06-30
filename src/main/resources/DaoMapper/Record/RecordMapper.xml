@@ -8,6 +8,10 @@
         select * from GameRecords where Username= #{username}
     </select>
 
+    <select id="getAllMaxUpdateGameRecord" resultType="com.example.unity_backend.Entity.GameRecord">
+        select * from GameRecords where Username= #{username} and isMaximumUpdate = "1" order by PlayTime DESC
+    </select>
+
     <select id="getMaxGrade" resultType="java.lang.Float">
         select COALESCE(MAX(Grade), -1) from gamerecords where Username=#{username}
     </select>

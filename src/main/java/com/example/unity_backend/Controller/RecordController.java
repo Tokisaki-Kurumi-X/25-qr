@@ -5,10 +5,7 @@ import com.example.unity_backend.Entity.GameRecord;
 import com.example.unity_backend.Service.RecordService;
 import com.example.unity_backend.Service.RegisterService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
@@ -23,6 +20,17 @@ public class RecordController {
     @PostMapping("/new")
     public JSONObject newGameRecord(@RequestBody GameRecord gameRecord) throws IOException {
         return recordService.newRecord(gameRecord);
+    }
 
+    @GetMapping("/query")
+    public JSONObject getGameRecords(@RequestParam("type") String type) throws IOException {
+        if(type.equals("normal")){//get all
+            return recordService.getAllRecords();
+        }else if(type.equals("max")){//max all
+            return recordService.getMaxRecords();
+        }
+        JSONObject jsonObject=new JSONObject();
+        jsonObject.put("res_msg","param is not valid");
+        return jsonObject;
     }
 }

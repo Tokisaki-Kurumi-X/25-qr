@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 
 @Component
 public class RecordDao {
@@ -29,13 +30,19 @@ public class RecordDao {
         this.mybatis.closeSqlSession();
     }
 
-    public GameRecord getAllGameRecord(String username) throws IOException {
+    public List<GameRecord> getAllGameRecords(String username) throws IOException {
         openDB();
-
         //recordMapper.getAllGameRecord(username);
         //需要封装成list
+        List<GameRecord> res=recordMapper.getAllGameRecord(username);
         closeDB();
-        return null;
+        return res;
+    }
+    public List<GameRecord> getMaxHistoryRecords(String username) throws IOException {
+        openDB();
+        List<GameRecord> res=recordMapper.getAllMaxUpdateGameRecord(username);
+        closeDB();
+        return res;
     }
 
     public void newGameRecord(GameRecord gameRecord) throws IOException {
