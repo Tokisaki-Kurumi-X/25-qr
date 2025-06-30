@@ -8,7 +8,7 @@ import java.util.List;
 @Component
 public class Whitelist {
     private  final List<String> patterns = Arrays.asList(
-            "/login",
+            "/login/**",
             "/register/**",
             "/static/**",
             "/webjars/**",

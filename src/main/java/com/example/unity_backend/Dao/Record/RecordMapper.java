@@ -7,8 +7,8 @@ import java.util.List;
 
 public interface RecordMapper {
         List<GameRecord> getAllGameRecord(String username);
-        int newGameRecord(String username, String playsong, Date playtime,float grade);
-        GameRecord getMaxGrade(String username);
-        int setMaxRecordHistory(String recordid);
+        int newGameRecord(GameRecord gameRecord);
+        float getMaxGrade(String username);
+        int setMaxRecordHistory(GameRecord gameRecord);
         List<GameRecord> getAllMaxUpdateGameRecord(String username);
 }

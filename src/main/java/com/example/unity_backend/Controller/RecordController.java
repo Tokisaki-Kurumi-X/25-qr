@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
+
 @RestController
 @RequestMapping("/gamerecord")
 public class RecordController {
@@ -19,7 +21,7 @@ public class RecordController {
         this.recordService=recordService1;
     }
     @PostMapping("/new")
-    public JSONObject newGameRecord(@RequestBody GameRecord gameRecord){
+    public JSONObject newGameRecord(@RequestBody GameRecord gameRecord) throws IOException {
         return recordService.newRecord(gameRecord);
 
     }

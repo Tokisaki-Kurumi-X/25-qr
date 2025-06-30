@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.Date;
 @Data
 public class GameRecord {
-    private String Username;
+    private String UserName;
     private Date PlayTime;
     private String PlaySong;
     private float Grade;

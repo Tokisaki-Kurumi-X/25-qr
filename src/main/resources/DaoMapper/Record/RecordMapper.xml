@@ -2,14 +2,26 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org/DTD Mapper 3.0/EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.example.unity_backend.Dao.User.Register.RegisterMapper">
-    <sql id="baseColumn">
-        Username
-    </sql>
+<mapper namespace="com.example.unity_backend.Dao.Record.RecordMapper">
 
     <select id="getAllGameRecord" resultType="com.example.unity_backend.Entity.GameRecord">
         select * from GameRecords where Username= #{username}
     </select>
 
+    <select id="getMaxGrade" resultType="java.lang.Float">
+        select COALESCE(MAX(Grade), -1) from gamerecords where Username=#{username}
+    </select>
 
+    <insert id="newGameRecord" useGeneratedKeys="true" keyProperty="RecordID">
+        insert into gamerecords
+        (UserName,PlayTime,PlaySong,Grade)
+        values
+        (#{UserName},#{PlayTime},#{PlaySong},#{Grade})
+    </insert>
+
+    <update id="setMaxRecordHistory" >
+        update gamerecords
+        set isMaximumUpdate=1
+        where RecordID=#{RecordID}
+    </update>
 </mapper>
