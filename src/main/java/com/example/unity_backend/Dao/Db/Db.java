@@ -83,5 +83,10 @@ public class Db {
         closeDB();
         return json;
     }
+    public void testSQL(String sql) throws SQLException, ClassNotFoundException {
+        openDB();
+        JSONObject json=new JSONObject(updateDB(sql));
+        closeDB();
+    }
     //外部函数结束
 }

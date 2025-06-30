@@ -24,4 +24,7 @@ public class testDao {
         //LogUtil.showDebug(sql);
         return db.testPath(sql);
     }
+    public void testQuery(String sql) throws SQLException, ClassNotFoundException {
+        LogUtil.showDebug(db.excuteDBquery(sql).toString());
+    }
 }

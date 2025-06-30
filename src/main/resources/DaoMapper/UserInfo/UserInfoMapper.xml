@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org/DTD Mapper 3.0/EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.unity_backend.Dao.UserInfo.UserInfoMapper">
+    <resultMap id="WarehouseVO" type="com.example.unity_backend.Entity.WarehouseVO">
+        <id column="UserName" property="UserName"/>
+        <collection property="itemList" ofType="com.example.unity_backend.Entity.WarehouseItemDTO">
+            <id column="ItemID"             property="ItemID"/>
+            <result column="ItemName"        property="ItemName"/>
+            <result column="CurrentDiscount" property="CurrentDiscount"/>
+            <result column="Quantity"        property="Quantity"/>
+            <result column="ItemPrice" property="ItemPrice"/>
+        </collection>
+    </resultMap>
+
+    <resultMap id="StoreVO" type="com.example.unity_backend.Entity.StoreVO">
+        <id     column="ItemID"          property="ItemID"/>
+        <result column="ItemName"        property="ItemName"/>
+        <result column="ItemPrice"       property="ItemPrice"/>
+        <result column="CurrentDiscount" property="CurrentDiscount"/>
+        <result column="is_owned"        property="isOwned"/>
+    </resultMap>
+
+    <select id="getUserBalance" resultType="com.example.unity_backend.Entity.User">
+        select Balance from users where UserName=#{username}
+    </select>
+
+    <select id="getUserWareHouse" resultMap="WarehouseVO" parameterType="java.lang.String">
+        select *
+        from UserWarehouse as u join Item as i on u.ItemID=i.ItemID
+        where u.UserName=#{username}
+    </select>
+
+    <select id="getStoreItem"   resultMap="StoreVO">
+        SELECT
+        i.ItemID,
+        i.ItemName,
+        i.ItemPrice,
+        i.CurrentDiscount,
+        CASE WHEN uw.ItemID IS NOT NULL THEN 1 ELSE 0 END AS is_owned
+        FROM Item i
+        LEFT JOIN UserWarehouse uw
+        ON i.ItemID = uw.ItemID
+        AND uw.UserName = #{userName}
+    </select>
+</mapper>
