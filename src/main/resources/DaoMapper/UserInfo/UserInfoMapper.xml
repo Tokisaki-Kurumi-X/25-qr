@@ -44,4 +44,35 @@
         ON i.ItemID = uw.ItemID
         AND uw.UserName = #{userName}
     </select>
+
+    <select id="getPurchaseItem" resultType="com.example.unity_backend.Entity.Item">
+        select *
+        from item
+        where ItemId=#{itemid}
+    </select>
+
+    <update id="updateUserWarehouse">
+        update userwarehouse
+        set Quantity=#{Quantity}
+        where UserName=#{UserName} and ItemID=#{ItemID}
+    </update>
+
+    <select id="getAUserWarehouseItem" resultType="com.example.unity_backend.Entity.UserWarehouse">
+        select *
+        from userwarehouse
+        where UserName=#{username} and ItemID=#{itemid}
+    </select>
+
+    <insert id="newUserWarehouse">
+        insert into userwarehouse
+        (UserName,ItemID,Quantity)
+        values
+        (#{UserName},#{ItemID},#{Quantity})
+    </insert>
+
+    <update id="updateUserBalance">
+        update users
+        set Balance=#{balance}
+        where UserName=#{username}
+    </update>
 </mapper>

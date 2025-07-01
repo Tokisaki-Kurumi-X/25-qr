@@ -1,11 +1,7 @@
 package com.example.unity_backend.Dao.UserInfo;
 
 import com.example.unity_backend.Dao.Mybatis.Mybatis;
-import com.example.unity_backend.Dao.Record.RecordMapper;
-import com.example.unity_backend.Entity.ItemDTO;
-import com.example.unity_backend.Entity.StoreVO;
-import com.example.unity_backend.Entity.User;
-import com.example.unity_backend.Entity.WarehouseVO;
+import com.example.unity_backend.Entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -50,5 +46,37 @@ public class UserInfoDao {
         List<StoreVO> storeVO=userInfoMapper.getStoreItem(username);
         closeDB();
         return  storeVO;
+    }
+
+    public Item getPurchaseItem(String itemid) throws IOException {
+        openDB();
+        Item item=userInfoMapper.getPurchaseItem(itemid);
+        closeDB();
+        return item;
+    }
+
+    public UserWarehouse getAWarehouseItem(String username,String itemid) throws IOException {
+        openDB();
+        UserWarehouse userWarehouse=userInfoMapper.getAUserWarehouseItem(username,itemid);
+        closeDB();
+        return userWarehouse;
+    }
+
+    public void updateUserWarehouse(UserWarehouse userWarehouse) throws IOException {
+        openDB();
+        userInfoMapper.updateUserWarehouse(userWarehouse);
+        closeDB();
+    }
+
+    public void newUserWarehouse(UserWarehouse userWarehouse) throws IOException {
+        openDB();
+        userInfoMapper.newUserWarehouse(userWarehouse);
+        closeDB();
+    }
+
+    public void UpdateUserBalance(String username,String balance) throws IOException {
+        openDB();
+        userInfoMapper.updateUserBalance(username,balance);
+        closeDB();
     }
 }

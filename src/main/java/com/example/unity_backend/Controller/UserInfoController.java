@@ -2,11 +2,11 @@ package com.example.unity_backend.Controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.example.unity_backend.Dao.Db.Db;
+import com.example.unity_backend.Entity.StoreItemVO;
 import com.example.unity_backend.Service.UserInfoService;
+import com.example.unity_backend.Utils.LogUtils.LogUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
@@ -34,6 +34,10 @@ public class UserInfoController {
     @GetMapping("/store")
     public JSONObject getStore() throws IOException {
         return  userInfoService.getUserStore();
+    }
 
+    @PostMapping("/purchase")
+    public JSONObject purchaseItem(@RequestBody StoreItemVO storeItemVO) throws IOException {
+        return userInfoService.purchaseItem(storeItemVO);
     }
 }

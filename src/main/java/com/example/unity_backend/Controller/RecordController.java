@@ -13,10 +13,12 @@ import java.io.IOException;
 @RequestMapping("/gamerecord")
 public class RecordController {
     private RecordService recordService;
+
     @Autowired
-    public RecordController(RecordService recordService1){
-        this.recordService=recordService1;
+    public RecordController(RecordService recordService1) {
+        this.recordService = recordService1;
     }
+
     @PostMapping("/new")
     public JSONObject newGameRecord(@RequestBody GameRecord gameRecord) throws IOException {
         return recordService.newRecord(gameRecord);
@@ -24,13 +26,19 @@ public class RecordController {
 
     @GetMapping("/query")
     public JSONObject getGameRecords(@RequestParam("type") String type) throws IOException {
-        if(type.equals("normal")){//get all
+        if (type.equals("normal")) {//get all
             return recordService.getAllRecords();
-        }else if(type.equals("max")){//max all
+        } else if (type.equals("max")) {//max all
             return recordService.getMaxRecords();
         }
-        JSONObject jsonObject=new JSONObject();
-        jsonObject.put("res_msg","param is not valid");
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("res_msg", "param is not valid");
         return jsonObject;
+    }
+
+    @GetMapping("/maxGrade")
+    public JSONObject getMaxGrade() throws IOException {
+
+        return recordService.getMaxGrade();
     }
 }

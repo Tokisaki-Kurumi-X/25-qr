@@ -51,4 +51,6 @@
         set MailStatus='3'
         where MailAddress=#{mail}
     </update>
+
+
 </mapper>

@@ -74,7 +74,15 @@ public class RecordService {
         getJWTUsername();
         List<GameRecord> records=recordDao.getMaxHistoryRecords(JWTusername);
         res.put("aaData",records);
-        res.put("type","normal");
+        res.put("type","max");
+        return res;
+    }
+
+    public JSONObject getMaxGrade() throws IOException {
+        res.clear();
+        getJWTUsername();
+        float maxHistory=recordDao.getMaxGradeRecord(JWTusername);
+        res.put("maxGrade",String.valueOf(maxHistory));
         return res;
     }
 }
