@@ -8,4 +8,5 @@ public class Item {
     private String ItemName;
     private String ItemPrice;
     private String CurrentDiscount;
+    private String isDuplicate;
 }

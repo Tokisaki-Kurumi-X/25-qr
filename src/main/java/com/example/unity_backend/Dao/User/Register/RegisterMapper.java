@@ -13,4 +13,5 @@ public interface RegisterMapper {
     int newUser(String name,String mail,String password);
     void newUserRole(String username,String roleid);
     void mailConfirm(String mail);
+    void setNickname(User user);
 }

@@ -48,4 +48,9 @@ public class RegisterController {
                 //LogUtil.showDebug(verifyCode.toString());
                 return registerService.verifyMailAddressbyCode(verifyCode);
         }
+
+        @PostMapping("/nickname")
+        public JSONObject setNickname(@RequestBody User user) throws IOException {
+                return  registerService.setNickname(user);
+        }
 }

@@ -82,4 +82,10 @@ public class RegisterDao {
         registerMapper.mailConfirm(user.getMailAddress());
         closeDB();
     }
+    public void setNickname(User user) throws IOException {
+        openDB();
+        LogUtil.showDebug(user.toString());
+        registerMapper.setNickname(user);
+        closeDB();
+    }
 }

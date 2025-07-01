@@ -115,4 +115,11 @@ public class RegisterService {
         res.put("isMatch","true");
         return res;
     }
+
+    public JSONObject setNickname(User user) throws IOException {
+        res.clear();
+        registerDao.setNickname(user);
+        res.put("status","success");
+        return res;
+    }
 }

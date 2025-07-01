@@ -3,6 +3,7 @@ package com.example.unity_backend.Dao.Record;
 import com.example.unity_backend.Dao.Mybatis.Mybatis;
 import com.example.unity_backend.Dao.User.Login.LoginMapper;
 import com.example.unity_backend.Entity.GameRecord;
+import com.example.unity_backend.Entity.User;
 import com.example.unity_backend.Utils.LogUtils.LogUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -66,4 +67,6 @@ public class RecordDao {
         recordMapper.setMaxRecordHistory(gameRecord);
         closeDB();
     }
+
+
 }

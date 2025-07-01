@@ -8,9 +8,8 @@
         <collection property="itemList" ofType="com.example.unity_backend.Entity.WarehouseItemDTO">
             <id column="ItemID"             property="ItemID"/>
             <result column="ItemName"        property="ItemName"/>
-            <result column="CurrentDiscount" property="CurrentDiscount"/>
+
             <result column="Quantity"        property="Quantity"/>
-            <result column="ItemPrice" property="ItemPrice"/>
         </collection>
     </resultMap>
 
@@ -32,18 +31,21 @@
         where u.UserName=#{username}
     </select>
 
-    <select id="getStoreItem"   resultMap="StoreVO">
+    <select id="getStoreItem" resultMap="StoreVO">
         SELECT
         i.ItemID,
         i.ItemName,
         i.ItemPrice,
         i.CurrentDiscount,
+        i.isDuplicate,
         CASE WHEN uw.ItemID IS NOT NULL THEN 1 ELSE 0 END AS is_owned
         FROM Item i
         LEFT JOIN UserWarehouse uw
         ON i.ItemID = uw.ItemID
         AND uw.UserName = #{userName}
     </select>
+
+
 
     <select id="getPurchaseItem" resultType="com.example.unity_backend.Entity.Item">
         select *

@@ -52,5 +52,9 @@
         where MailAddress=#{mail}
     </update>
 
-
+    <update id="setNickname">
+        update users
+        set NickName=#{NickName}
+        where UserName=#{username}
+    </update>
 </mapper>

@@ -1,8 +1,10 @@
 package com.example.unity_backend.Utils.JWTUtils;
 
 import com.alibaba.fastjson.JSONObject;
+import com.example.unity_backend.Dao.UserInfo.UserInfoDao;
 import com.example.unity_backend.Utils.LogUtils.LogUtil;
 import io.jsonwebtoken.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
@@ -20,6 +22,8 @@ import java.util.stream.Collectors;
         //设置一个密钥\私钥,为了安全需要定期更换
         //对称密钥
         private static final String TOKEN_SECRET_KEY = "nfjkfjslljsgjoajjfoisjfsjlkjfskl";
+        @Autowired
+        private UserInfoDao userInfoDao;
 
         public JSONObject generateJson(String username,String audience){
             JSONObject json=new JSONObject();
