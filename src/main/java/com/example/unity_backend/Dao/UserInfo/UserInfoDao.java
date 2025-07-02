@@ -3,6 +3,9 @@ package com.example.unity_backend.Dao.UserInfo;
 import com.example.unity_backend.Dao.Mybatis.Mybatis;
 import com.example.unity_backend.Entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -26,6 +29,7 @@ public class UserInfoDao {
         this.mybatis.closeSqlSession();
     }
 
+
     public User getUserBalance(String username) throws IOException {
         openDB();
         User user=userInfoMapper.getUserBalance(username);
@@ -40,7 +44,8 @@ public class UserInfoDao {
         return warehouseVO;
     }
 
-    //放进redis
+    //放进redis,管理员新增商城物品或者购买了再改
+    @Cacheable(value = "storeItem",key = "#username")
     public List<StoreVO> getStoreItem(String username) throws IOException {
         openDB();
         List<StoreVO> storeVO=userInfoMapper.getStoreItem(username);
@@ -68,6 +73,7 @@ public class UserInfoDao {
         closeDB();
     }
 
+    @CacheEvict(value = "storeItem",key = "#userWarehouse.UserName")
     public void newUserWarehouse(UserWarehouse userWarehouse) throws IOException {
         openDB();
         userInfoMapper.newUserWarehouse(userWarehouse);
@@ -80,6 +86,7 @@ public class UserInfoDao {
         closeDB();
     }
 
+    @Cacheable(value = "userInfo",key = "#username")
     public String getNicknamebyUsername(String username) throws IOException {
         openDB();
         String name=userInfoMapper.getNicknamebyUsername(username);

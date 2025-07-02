@@ -8,7 +8,7 @@
     </sql>
 
     <select id="getUserByUserName" resultType="com.example.unity_backend.Entity.User">
-        select <include refid="baseColumn"/> from users where Username= #{username}
+        select * from users where Username= #{username}
     </select>
 
     <select id="getUserByMailAddress" resultType="com.example.unity_backend.Entity.VerifyCode">
@@ -30,9 +30,9 @@
 
     <insert id="newUser">
         Insert into users
-        (MailAddress,Username,Password)
+        (MailAddress,Username,Password,NickName,changeNicknameCoolTime)
         values
-        (#{mail},#{name},#{password})
+        (#{mail},#{name},#{password},#{NickName},0)
     </insert>
 
     <insert id="newUserRole">

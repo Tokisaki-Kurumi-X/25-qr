@@ -8,6 +8,7 @@ import com.example.unity_backend.Entity.VerifyCode;
 import com.example.unity_backend.Utils.LogUtils.LogUtil;
 import com.example.unity_backend.Utils.MailUtils.MailUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -120,13 +121,14 @@ public class RegisterService {
         res.clear();
         //verify
         Date expire=getCooltime(user);
+       // LogUtil.showDebug(expire.toString());
         if(expire.after(new Date(System.currentTimeMillis()))){
             res.put("status","failed");
             res.put("res_msg","Still in cooling-off");
             return res;
         }
         //set
-        user.setChangeNickCoolTime(new Date(System.currentTimeMillis()));
+        user.setChangeNicknameCoolTime(new Date(System.currentTimeMillis()+1000*60*60*24));
         registerDao.setNickname(user);
         res.put("status","success");
         return res;
@@ -134,6 +136,7 @@ public class RegisterService {
 
     private Date getCooltime(User user) throws IOException {
         User user1=registerDao.getUserbyUsername(user.getUsername());
-        return user1.getChangeNickCoolTime();
+        //LogUtil.showDebug(user1.toString());
+        return user1.getChangeNicknameCoolTime();
     }
 }

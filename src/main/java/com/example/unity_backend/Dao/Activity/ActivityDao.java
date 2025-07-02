@@ -8,6 +8,7 @@ import com.example.unity_backend.Entity.ParticipateDTO;
 import com.example.unity_backend.Entity.Participation;
 import com.example.unity_backend.Utils.LogUtils.LogUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.redis.core.RedisTemplate;
 
 import org.springframework.stereotype.Component;
@@ -73,7 +74,7 @@ public class ActivityDao {
         closeDB();
     }
 
-
+    @CacheEvict(value = "storeItem",key = "#participateDTO.UserName")
     public void getReward(ParticipateDTO participateDTO) throws IOException {
         openDB();
         activityMapper.getReward(participateDTO);

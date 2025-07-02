@@ -12,5 +12,5 @@ public class User {
     private String NickName;
     private double Balance;
     private String UserStatus;
-    private Date changeNickCoolTime;
+    private Date changeNicknameCoolTime;
 }

@@ -32,6 +32,7 @@ public class RecordService {
         this.JWTusername=authentication.getName();
     }
 
+    //redis remove
     public JSONObject newRecord(GameRecord gameRecord) throws IOException {
         res.clear();
         //init
@@ -60,6 +61,7 @@ public class RecordService {
         return res;
     }
 
+    //redis store
     public JSONObject getAllRecords() throws IOException {
         res.clear();
         getJWTUsername();
@@ -69,6 +71,7 @@ public class RecordService {
         return res;
     }
 
+    //redis store
     public JSONObject getMaxRecords() throws IOException {
         res.clear();
         getJWTUsername();
@@ -78,6 +81,7 @@ public class RecordService {
         return res;
     }
 
+    
     public JSONObject getMaxGrade() throws IOException {
         res.clear();
         getJWTUsername();

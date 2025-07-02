@@ -6,6 +6,9 @@ import com.example.unity_backend.Entity.GameRecord;
 import com.example.unity_backend.Entity.User;
 import com.example.unity_backend.Utils.LogUtils.LogUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -17,6 +20,8 @@ public class RecordDao {
     private Mybatis mybatis;
     private RecordMapper recordMapper;
     private GameRecord gameRecord;
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
 
     @Autowired
     public RecordDao(Mybatis mybatis1){
@@ -39,6 +44,7 @@ public class RecordDao {
         closeDB();
         return res;
     }
+
     public List<GameRecord> getMaxHistoryRecords(String username) throws IOException {
         openDB();
         List<GameRecord> res=recordMapper.getAllMaxUpdateGameRecord(username);
@@ -46,12 +52,14 @@ public class RecordDao {
         return res;
     }
 
+
     public void newGameRecord(GameRecord gameRecord) throws IOException {
         openDB();
         gameRecord.setPlayTime(new Date(System.currentTimeMillis()));
         int id=recordMapper.newGameRecord(gameRecord);
         //LogUtil.showDebug("id is "+gameRecord.getRecordID());
         //gameRecord.setRecordID(id);
+
         closeDB();
     }
 

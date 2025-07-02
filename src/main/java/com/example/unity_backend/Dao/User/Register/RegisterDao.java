@@ -5,6 +5,8 @@ import com.example.unity_backend.Entity.User;
 import com.example.unity_backend.Entity.VerifyCode;
 import com.example.unity_backend.Utils.LogUtils.LogUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -88,7 +90,7 @@ public class RegisterDao {
         registerMapper.mailConfirm(user.getMailAddress());
         closeDB();
     }
-
+    @CacheEvict(value = "userInfo",key="#user.Username")
     public void setNickname(User user) throws IOException {
         openDB();
         LogUtil.showDebug(user.toString());

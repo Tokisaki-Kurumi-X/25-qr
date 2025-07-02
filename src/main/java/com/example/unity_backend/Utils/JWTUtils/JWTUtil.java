@@ -40,8 +40,8 @@ import java.util.stream.Collectors;
             //String **=json.getString()
             //此处应从数据库或者Redis查询
             List<String> roles=new ArrayList<>();
-            roles.add("ROLE_ADMIN");
-            roles.add("ROLE_TESTUSER");
+            //roles.add("ROLE_ADMIN");
+            roles.add("ROLE_USER");
 
             Claims claim= Jwts.claims().setSubject(json.getString("Username"));
             claim.put("roles",roles);

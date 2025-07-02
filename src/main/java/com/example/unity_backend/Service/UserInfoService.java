@@ -37,7 +37,7 @@ public class UserInfoService {
         res.put("balance",user.getBalance());
         return  res;
     }
-
+    //redis store
     public JSONObject getUserWarehouse() throws IOException {
         res.clear();
         getJWTUsername();
