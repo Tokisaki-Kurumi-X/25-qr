@@ -7,4 +7,5 @@ public class Participation {
     private String ActivityID;
     private String UserName;
     private String CurrentProgress;
+    private String hasGetReward;
 }

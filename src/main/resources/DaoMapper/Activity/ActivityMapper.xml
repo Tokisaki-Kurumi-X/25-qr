@@ -46,8 +46,25 @@ FROM
 WHERE
     NOW() < a.EndAt;
 
-
-
         ]]>
     </select>
+
+    <insert id="participate">
+        insert into participation
+        (ActivityID,UserName,CurrentProgress,hasRedeemedReward)
+        values
+        (#{ActivityID},#{UserName},0,0)
+    </insert>
+
+    <update id="getReward">
+        update participation
+        set hasRedeemedReward=1
+        where ActivityID=#{ActivityID} and UserName=#{UserName}
+    </update>
+
+    <update id="updateUserProgress">
+        update participation
+        set CurrentProgress=#{CurrentProgress}
+        where ActivityID=#{ActivityID} and UserName=#{UserName}
+    </update>
 </mapper>

@@ -1,12 +1,11 @@
 package com.example.unity_backend.Controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.example.unity_backend.Entity.Activity;
+import com.example.unity_backend.Entity.ActivityVO;
 import com.example.unity_backend.Service.ActivityService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
@@ -25,9 +24,17 @@ public class ActivityController {
     }
 
     @PostMapping("/new")
-    public JSONObject participate(){
-
-        return null;
+    public JSONObject participate(@RequestBody Activity activity) throws IOException {
+        return activityService.Participate(activity);
     }
 
+    @PutMapping("/reward")
+    public JSONObject getReward(@RequestBody Activity activity) throws IOException {
+        return activityService.getReward(activity);
+    }
+
+    @PutMapping("/progress")
+    public JSONObject updateProgress(@RequestBody ActivityVO activityVO) throws IOException {
+        return activityService.updateProgress(activityVO);
+    }
 }

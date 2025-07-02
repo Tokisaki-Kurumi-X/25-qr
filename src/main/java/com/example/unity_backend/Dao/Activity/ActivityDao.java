@@ -4,10 +4,12 @@ import com.example.unity_backend.Dao.Mybatis.Mybatis;
 import com.example.unity_backend.Dao.Record.RecordMapper;
 import com.example.unity_backend.Entity.Activity;
 import com.example.unity_backend.Entity.ActivityVO;
+import com.example.unity_backend.Entity.ParticipateDTO;
+import com.example.unity_backend.Entity.Participation;
 import com.example.unity_backend.Utils.LogUtils.LogUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.RedisTemplate;
+
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -18,6 +20,7 @@ import java.util.concurrent.TimeUnit;
 public class ActivityDao {
     private Mybatis mybatis;
     private ActivityMapper activityMapper;
+    private String module="activities:";
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;  // 注入 RedisTemplate
 
@@ -37,7 +40,7 @@ public class ActivityDao {
 
 
     public List<ActivityVO> getListandReword(String username) throws IOException {
-        String cacheKey = "allActivities:act";
+        String cacheKey = module+username;
         @SuppressWarnings("unchecked")
         List<ActivityVO> cached = (List<ActivityVO>) redisTemplate.opsForValue().get(cacheKey);
         if (cached != null) {
@@ -64,4 +67,30 @@ public class ActivityDao {
         return list;
     }
 
+    public void participate(ParticipateDTO participateDTO) throws IOException {
+        openDB();
+        activityMapper.participate(participateDTO);
+        closeDB();
+    }
+
+
+    public void getReward(ParticipateDTO participateDTO) throws IOException {
+        openDB();
+        activityMapper.getReward(participateDTO);
+        //redis
+        String cachekey=module+participateDTO.getUserName();
+        //LogUtil.showDebug(cachekey);
+        redisTemplate.delete(cachekey);
+        closeDB();
+    }
+
+    public void updateUserProgress(Participation participation) throws IOException {
+        openDB();
+        String cachekey=module+participation.getUserName();
+        //LogUtil.showDebug(cachekey);
+        redisTemplate.delete(cachekey);
+        LogUtil.showDebug(participation.toString());
+        activityMapper.updateUserProgress(participation);
+        closeDB();
+    }
 }
