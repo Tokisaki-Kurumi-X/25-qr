@@ -18,6 +18,7 @@ spring:
     options: ?useUnicode=true&characterEncoding=utf-8&useSSL=false
 
   jackson:
+    time-zone: GMT+8
     mapper:
       ACCEPT_CASE_INSENSITIVE_PROPERTIES: true
 
@@ -55,3 +56,14 @@ tableName: #拼写sql语句时表名更直观
 mybatis:
   resource: mybatis-config.xml
 
+# redis 配置
+redis:
+  server:
+    pattern: cluster
+    nodes: 127.0.0.1:6379
+    password: 123456
+    maxIdle: 8
+    minIdle: 4
+    maxTotal: 8
+    maxWaitMillis: 6000
+    timeOut: 6000

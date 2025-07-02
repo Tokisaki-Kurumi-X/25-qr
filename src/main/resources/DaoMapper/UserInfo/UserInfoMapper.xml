@@ -8,7 +8,6 @@
         <collection property="itemList" ofType="com.example.unity_backend.Entity.WarehouseItemDTO">
             <id column="ItemID"             property="ItemID"/>
             <result column="ItemName"        property="ItemName"/>
-
             <result column="Quantity"        property="Quantity"/>
         </collection>
     </resultMap>
@@ -77,4 +76,10 @@
         set Balance=#{balance}
         where UserName=#{username}
     </update>
+
+    <select id="getNicknamebyUsername" resultType="java.lang.String">
+        select NickName
+        from users
+        where UserName=#{username}
+    </select>
 </mapper>

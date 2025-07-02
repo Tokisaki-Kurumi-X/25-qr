@@ -118,8 +118,22 @@ public class RegisterService {
 
     public JSONObject setNickname(User user) throws IOException {
         res.clear();
+        //verify
+        Date expire=getCooltime(user);
+        if(expire.after(new Date(System.currentTimeMillis()))){
+            res.put("status","failed");
+            res.put("res_msg","Still in cooling-off");
+            return res;
+        }
+        //set
+        user.setChangeNickCoolTime(new Date(System.currentTimeMillis()));
         registerDao.setNickname(user);
         res.put("status","success");
         return res;
+    }
+
+    private Date getCooltime(User user) throws IOException {
+        User user1=registerDao.getUserbyUsername(user.getUsername());
+        return user1.getChangeNickCoolTime();
     }
 }

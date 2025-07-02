@@ -103,4 +103,11 @@ public class UserInfoService {
         price*=(1-Double.valueOf(res.getCurrentDiscount()));
         return price;
     }
+
+    public JSONObject getNicknameByUsername(String username) throws IOException {
+        res.clear();
+        String nickname=userInfoDao.getNicknamebyUsername(username);
+        res.put("nickname",nickname);
+        return res;
+    }
 }

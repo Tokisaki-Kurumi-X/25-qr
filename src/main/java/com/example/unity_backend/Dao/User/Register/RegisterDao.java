@@ -46,7 +46,13 @@ public class RegisterDao {
         closeDB();
         return a;
     }
-
+    public User getUserbyUsername(String username) throws IOException {
+        openDB();
+        user=null;
+        user=registerMapper.getUserByUserName(username);
+        closeDB();
+        return user;
+    }
     public void upsertVerifyCode(String mail,String code) throws IOException {
         openDB();
         //LogUtil.showDebug("MailAddress to be updated: " + mail);
@@ -82,6 +88,7 @@ public class RegisterDao {
         registerMapper.mailConfirm(user.getMailAddress());
         closeDB();
     }
+
     public void setNickname(User user) throws IOException {
         openDB();
         LogUtil.showDebug(user.toString());

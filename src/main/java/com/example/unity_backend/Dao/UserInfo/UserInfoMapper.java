@@ -15,4 +15,5 @@ public interface UserInfoMapper {
     void updateUserWarehouse(UserWarehouse userWarehouse);
     void newUserWarehouse(UserWarehouse userWarehouse);
     void updateUserBalance(String username,String balance);
+    String getNicknamebyUsername(String username);
 }

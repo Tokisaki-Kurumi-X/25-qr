@@ -70,7 +70,7 @@ public class RecordService {
     }
 
     public JSONObject getMaxRecords() throws IOException {
-        res.clear();;
+        res.clear();
         getJWTUsername();
         List<GameRecord> records=recordDao.getMaxHistoryRecords(JWTusername);
         res.put("aaData",records);

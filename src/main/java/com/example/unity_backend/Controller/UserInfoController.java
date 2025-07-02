@@ -40,4 +40,10 @@ public class UserInfoController {
     public JSONObject purchaseItem(@RequestBody StoreItemVO storeItemVO) throws IOException {
         return userInfoService.purchaseItem(storeItemVO);
     }
+
+    @GetMapping("/nickname")
+    public JSONObject getNicknameByUsername(@RequestParam String username) throws IOException {
+        LogUtil.showDebug(username);
+        return userInfoService.getNicknameByUsername(username);
+    }
 }

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org/DTD Mapper 3.0/EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.unity_backend.Dao.Activity.ActivityMapper">
+    <resultMap id="ActivityVOList" type="com.example.unity_backend.Entity.ActivityVO">
+        <id column="ActivityID" property="ActivityID"/>
+        <result column="ActName" property="ActName"/>
+        <result column="StartAt" property="StartAt"/>
+        <result column="EndAt" property="EndAt"/>
+        <result column="TotalProgress" property="ActTotalProgress"/>
+        <result column="username" property="username"/>
+        <result column="CurrentProgress" property="UserCurrentProgress"/>
+        <result column="hasRedeemedReward" property="hasGetReward"/>
+        <collection property="reward" ofType="com.example.unity_backend.Entity.Reword">
+            <id column="ItemID" property="ItemID"/>
+            <result column="ItemName" property="ItemName"/>
+            <result column="ItemNum" property="ItemNum"/>
+            <result column="isDuplicate" property="isDuplicate"/>
+        </collection>
+    </resultMap>
+
+
+
+    <select id="getListandReward" resultMap="ActivityVOList">
+        <![CDATA[
+    SELECT
+    a.ActivityID,
+    a.ActName,
+    a.StartAt,
+    a.EndAt,
+    r.ItemID,
+    r.ItemNum,
+    i.ItemName,
+    i.isDuplicate,
+    COALESCE(p.UserName, '无参与') AS UserName,  -- 没有参与记录时，UserName 设为 '无参与'
+    COALESCE(p.CurrentProgress, 0) AS CurrentProgress,  -- 没有参与记录时，CurrentProgress 设为 0
+    a.TotalProgress,
+    COALESCE(p.hasRedeemedReward, 0) AS hasRedeemedReward  -- 没有参与记录时，hasRedeemedReward 设为 0
+FROM
+    activity AS a
+    LEFT JOIN reward AS r ON a.ActivityID = r.ActivityID
+    LEFT JOIN item AS i ON r.ItemID = i.ItemID
+    LEFT JOIN participation AS p ON a.ActivityID = p.ActivityID
+        AND p.UserName = #{username}  -- 对特定用户进行过滤
+WHERE
+    NOW() < a.EndAt;
+
+
+
+        ]]>
+    </select>
+</mapper>

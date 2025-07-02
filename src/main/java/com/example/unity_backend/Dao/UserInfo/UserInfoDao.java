@@ -79,4 +79,12 @@ public class UserInfoDao {
         userInfoMapper.updateUserBalance(username,balance);
         closeDB();
     }
+
+    public String getNicknamebyUsername(String username) throws IOException {
+        openDB();
+        String name=userInfoMapper.getNicknamebyUsername(username);
+        closeDB();
+        return name;
+    }
+
 }

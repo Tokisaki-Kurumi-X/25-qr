@@ -3,6 +3,9 @@
         PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
+    <settings>
+        <setting name="logImpl" value="STDOUT_LOGGING"/>
+    </settings>
     <environments default="development">
         <environment id="development">
             <transactionManager type="JDBC"/>
@@ -19,5 +22,6 @@
         <mapper resource="DaoMapper/User/Register/RegisterMapper.xml"/>
         <mapper resource="DaoMapper/Record/RecordMapper.xml"/>
         <mapper resource="DaoMapper/UserInfo/UserInfoMapper.xml"/>
+        <mapper resource="DaoMapper/Activity/ActivityMapper.xml"/>
     </mappers>
 </configuration>

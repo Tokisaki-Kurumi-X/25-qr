@@ -17,7 +17,8 @@ public class Whitelist {
             "/test/**",
             // 如果后续有更多路径，只要加到这里就行
             "/public/**",
-            "/register.html"
+            "/register.html",
+            "/user/nickname"
 
     );
 
