@@ -5,6 +5,7 @@
 <mapper namespace="com.example.unity_backend.Dao.Activity.ActivityMapper">
     <resultMap id="ActivityVOList" type="com.example.unity_backend.Entity.ActivityVO">
         <id column="ActivityID" property="ActivityID"/>
+        <result column="Description" property="Description"/>
         <result column="ActName" property="ActName"/>
         <result column="StartAt" property="StartAt"/>
         <result column="EndAt" property="EndAt"/>
@@ -25,6 +26,7 @@
     <select id="getListandReward" resultMap="ActivityVOList">
         <![CDATA[
     SELECT
+    a.Description,
     a.ActivityID,
     a.ActName,
     a.StartAt,
@@ -67,4 +69,27 @@ WHERE
         set CurrentProgress=#{CurrentProgress}
         where ActivityID=#{ActivityID} and UserName=#{UserName}
     </update>
+
+    <select id="getRewordListByActID" resultType="com.example.unity_backend.Entity.Reword">
+        select *
+        from reward
+        where ActivityID=#{ActivityID}
+    </select>
+
+    <insert id="toWarehouse">
+        insert into userwarehouse
+        (UserName,ItemID,Quantity)
+        values
+        (#{username},#{ItemID},#{Quantity})
+    </insert>
+    <select id="getParticipationByUsername">
+        select *
+        from participation
+        where UserName=#{username}
+    </select>
+    <select id="getSingleActivityByID">
+        select *
+        from activity
+        where ActivityID=#{ActivityID}
+    </select>
 </mapper>

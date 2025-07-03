@@ -10,6 +10,7 @@ public class Activity {
     private String ActName;
     private Date StartAt;
     private Date EndAt;
-    private String ActStatus;
+    private String Description;
     private String TotalProgress;
+    private String Level;
 }

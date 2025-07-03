@@ -5,22 +5,22 @@
 <mapper namespace="com.example.unity_backend.Dao.Record.RecordMapper">
 
     <select id="getAllGameRecord" resultType="com.example.unity_backend.Entity.GameRecord">
-        select * from GameRecords where Username= #{username}
+        select * from GameRecords where Username= #{username} and Level=#{level} order by PlayTime DESC
     </select>
 
     <select id="getAllMaxUpdateGameRecord" resultType="com.example.unity_backend.Entity.GameRecord">
-        select * from GameRecords where Username= #{username} and isMaximumUpdate = "1" order by PlayTime DESC
+        select * from GameRecords where Username= #{username} and isMaximumUpdate = "1" and Level=#{level} order by PlayTime DESC
     </select>
 
     <select id="getMaxGrade" resultType="java.lang.Float">
-        select COALESCE(MAX(Grade), -1) from gamerecords where Username=#{username}
+        select COALESCE(MIN(Grade), -1) from gamerecords where Username=#{username}
     </select>
 
     <insert id="newGameRecord" useGeneratedKeys="true" keyProperty="RecordID">
         insert into gamerecords
-        (UserName,PlayTime,PlaySong,Grade)
+        (UserName,PlayTime,costTime,Level)
         values
-        (#{UserName},#{PlayTime},#{PlaySong},#{Grade})
+        (#{UserName},#{PlayTime},#{costTime},#{level})
     </insert>
 
     <update id="setMaxRecordHistory" >
@@ -28,4 +28,8 @@
         set isMaximumUpdate=1
         where RecordID=#{RecordID}
     </update>
+
+    <select id="getMincostTime" resultType="java.lang.Float">
+        select COALESCE(MIN(costTime), -1) from gamerecords where Username=#{username} and Level=#{level}
+    </select>
 </mapper>

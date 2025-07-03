@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>打字小游戏</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .game-container {
+            text-align: center;
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        #text {
+            font-size: 24px;
+            margin-bottom: 20px;
+            display: block;
+        }
+        #input {
+            font-size: 24px;
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        #progress {
+            margin-top: 10px;
+            font-size: 18px;
+            color: green;
+        }
+        #timer {
+            margin-top: 10px;
+            font-size: 18px;
+        }
+        #startBtn {
+            font-size: 20px;
+            padding: 10px 20px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+        }
+
+    </style>
+    <script src="/webjars/jquery/3.7.1/jquery.js"></script>
+    <script src="../config.js"></script>
+</head>
+<body>
+
+<div class="game-container">
+    <h1>打字小游戏</h1>
+    <button id="startBtn">开始游戏</button>
+
+    <div id="text"></div>
+    <input type="text" id="input" placeholder="开始打字..." disabled>
+    <div id="progress">进度: 0%</div>
+    <div id="timer">时间: 0秒</div>
+</div>
+
+<script>
+    const startBtn = document.getElementById("startBtn");
+
+    const inputElement = document.getElementById("input");
+    const textElement = document.getElementById("text");
+    const progressElement = document.getElementById("progress");
+    const timerElement = document.getElementById("timer");
+    const level=2;
+    // 随机预设英文文本
+    // const sampleText = "The quick brown fox jumps over the lazy dog.";
+    const sampleText ="This is Level-2,which is harder than Level-1";
+    var errorTimes=0;
+    var errorLimits=Math.floor(sampleText.length/5);
+    let currentIndex = 0;
+    let startTime;
+    let timerInterval;
+    var checked=1;
+
+
+    // 游戏开始
+    startBtn.addEventListener("click", startGame);
+
+    // 游戏开始函数
+    function startGame() {
+        checked=1;
+        $.ajax({
+            url:config.baseUrl+"/user/getnum?itemid=2",
+            method: "get",
+            headers:{"Authorization":localStorage.getItem("JWT")},
+            success:function (res) {
+                if(res.num!=null&&res.num>0){
+                    var modifynum=res.num-1;
+                    if(confirm("是否使用包过卡\n当前剩余:"+res.num)){
+                        $.ajax({
+                            url:config.baseUrl+"/user/setnum?itemid=2&itemnum="+modifynum,
+                            method:"put",
+                            headers:{"Authorization":localStorage.getItem("JWT")},
+                            success:function (res) {
+                                startTimer();
+                                if(res.status==="success"){
+                                    alert("成功使用包过卡");
+                                    checked=0;
+                                }
+                            },
+                            error:function () {
+                                alert("网络连接错误");
+                            }
+                        })
+
+                    }
+                }
+            }
+        })
+
+
+        startBtn.disabled = true;
+
+        inputElement.disabled = false;
+        inputElement.value = ""; // 清空输入框
+        currentIndex = 0;
+        textElement.textContent = sampleText;
+        progressElement.textContent = "进度: 0%";
+        timerElement.textContent = "时间: 0秒";
+        startTime = Date.now(); // 记录开始时间
+
+        inputElement.focus();
+        //包过卡逻辑
+
+    }
+
+    // 启动计时器
+    function startTimer() {
+        timerInterval = setInterval(() => {
+            const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
+            timerElement.textContent = `时间: ${elapsedTime}秒`;
+        }, 1000);
+    }
+
+    // 游戏结束函数
+    function endGame() {
+        clearInterval(timerInterval); // 停止计时
+        const elapsedTime = ((Date.now() - startTime) / 1000).toFixed(2);
+        //后端请求
+        $.ajax({
+            url:config.baseUrl+"/gamerecord/new",
+            method:"post",
+            headers:{"Authorization":localStorage.getItem("JWT")},
+            contentType: "application/json; charset=UTF-8",  // 告诉服务器请求体是 JSON
+            dataType: "json",
+            data:JSON.stringify({
+                "costTime":elapsedTime,
+                "grade":elapsedTime,
+                "level":level
+            }),
+            success:function (res) {
+                console.log(res.isMax);
+                if(res.isMax){
+                    alert(`恭喜你完成了游戏！\n用时: ${elapsedTime}秒,创下历史最短用时`);
+                }else{
+                    alert(`恭喜你完成了游戏！\n用时: ${elapsedTime}秒`);
+                }
+            }
+        })
+
+        //console.log("111");
+        resetGame();
+    }
+
+    // 输入事件监听
+    inputElement.addEventListener('input', function() {
+        let userInput = inputElement.value;
+
+        // 检查输入的字符是否匹配
+        if (userInput === sampleText.substring(0, userInput.length)) {
+            // 更新进度条
+            currentIndex = userInput.length;
+            const progress = (currentIndex / sampleText.length) * 100;
+            progressElement.textContent = `进度: ${Math.round(progress)}%`;
+
+            // 完成游戏
+            if (currentIndex === sampleText.length) {
+
+                endGame();
+            }
+        } else {
+            progressElement.textContent = `进度: 错误，重新输入!`;
+            if(checked==1){
+                errorTimes++;
+            }
+            if(errorTimes>=errorLimits){
+                //访问后端，获取复活币个数
+                $.ajax({
+                    url:config.baseUrl+"/user/getnum?itemid=1",
+                    method: "get",
+                    headers:{"Authorization":localStorage.getItem("JWT")},
+                    success:function (res) {
+                        console.log(res);
+                        if(res.num!=null&&res.num>0){
+                            var modifynum=res.num-1;
+                            if(confirm("是否使用复活币\n当前剩余:"+res.num)){
+                                //后端写代码
+                                $.ajax({
+                                    url:config.baseUrl+"/user/setnum?itemid=1&itemnum="+modifynum,
+                                    method:"put",
+                                    headers:{"Authorization":localStorage.getItem("JWT")},
+                                    success:function (res) {
+                                        if(res.status==="success"){
+                                            alert("成功使用复活币");
+                                            errorTimes=0;
+                                        }
+                                    },
+                                    error:function () {
+                                        alert("网络连接错误");
+                                    }
+                                })
+                            }else {
+                                resetGame();
+                            }
+                        }
+                    },
+                    error:function (err) {
+                        alert("网络连接错误")
+                    }
+                })
+                // if(confirm("是否使用复活币")){
+                //     //访问后端，获取复活币个数
+                //
+                // }
+                //复活币逻辑
+            }
+        }
+    });
+
+    // 重置游戏
+    function resetGame() {
+        startBtn.disabled = false;
+
+
+        inputElement.disabled = true;
+        progressElement.textContent = "进度: 0%";
+        inputElement.value = "";
+        textElement.textContent = "";
+        timerElement.textContent = "时间: 0秒";
+    }
+
+
+</script>
+
+</body>
+</html>

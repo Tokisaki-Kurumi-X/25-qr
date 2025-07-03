@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>主页面</title>
+    <!-- 引入 Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEJxvF+e5B8v2T9lX+Vg6HMWyW4rkFtCwFJbx69UjE5Z5l1JwM+0r4g1+Z8rE" crossorigin="anonymous">
+    <script src="/webjars/jquery/3.7.1/jquery.js"></script>
+    <script src="config.js"></script>
+    <style>
+        /* 通用样式 */
+        body {
+            background-color: #f0f8ff; /* 浅蓝色背景 */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: #4e8ef7; /* 更柔和的蓝色 */
+            text-align: center;
+            margin-top: 30px;
+            margin-bottom: 20px;
+        }
+
+        .container {
+            width: 80%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* 按钮样式 */
+        button {
+            padding: 12px 20px;
+            font-size: 1rem;
+            background-color: #4e8ef7; /* 更柔和的蓝色 */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 10px;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #357ac5; /* 更柔和的深蓝色 */
+        }
+
+        /* 设置卡片样式 */
+        .card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-top: 40px;
+            margin-bottom: 40px;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .container {
+                width: 95%;
+            }
+
+            .card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="card">
+        <h1>主页面</h1>
+        <button id="chooseLevel">进入关卡选择</button>
+        <button id="record">查看游玩记录</button>
+        <button id="activity">查看活动列表</button>
+        <button id="warehouse">查看我的仓库</button>
+        <button id="store">进入商城</button>
+        <button id="userinfo">进入个人信息界面</button>
+        <button id="quit">退出登录</button>
+    </div>
+</div>
+
+<!-- 引入 Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-vp2jr0PsswEvj9uD2F9F47rpp4FFXYAvXz6rHR7lh5j90q5TLy6frBR50kM0+f8D" crossorigin="anonymous"></script>
+
+<script>
+    $(window).on("load", function () {
+        const JWT = localStorage.getItem("JWT");
+        // 如果需要验证JWT，可以在此进行处理
+    });
+
+    $("#quit").click(function () {
+        localStorage.removeItem("JWT");
+        window.location.replace("/index.html");
+    });
+
+    $("#chooseLevel").click(function () {
+        window.location.href = "/level.html";
+    });
+
+    $("#record").click(function () {
+        window.location.href = "/record.html";
+    });
+
+    $("#activity").click(function () {
+        window.location.href = "/activity.html";
+    });
+
+    $("#store").click(function () {
+        window.location.href = "/store.html";
+    });
+
+    $("#warehouse").click(function () {
+        window.location.href = "/warehouse.html";
+    });
+
+    $("#userinfo").click(function () {
+        window.location.href="/userinfo.html";
+    })
+</script>
+
+</body>
+</html>

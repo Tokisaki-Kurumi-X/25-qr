@@ -10,7 +10,7 @@ public class Whitelist {
     private  final List<String> patterns = Arrays.asList(
             "/login/**",
             "/register/**",
-            "/static/**",
+            "/static/*",
             "/webjars/**",
             "/login.html",
             "/main.html",
@@ -18,8 +18,18 @@ public class Whitelist {
             // 如果后续有更多路径，只要加到这里就行
             "/public/**",
             "/register.html",
-            "/user/nickname"
-
+            "/user/nickname",
+            "/test.html",
+            "/config.js",
+            "/index.html",
+            "/level.html",
+            "/Level/Level1.html",
+            "/Level/Level2.html",
+            "/record.html",
+            "/activity.html",
+            "/store.html",
+            "/warehouse.html",
+            "/userinfo.html"
     );
 
     public List<String> getPatterns() {

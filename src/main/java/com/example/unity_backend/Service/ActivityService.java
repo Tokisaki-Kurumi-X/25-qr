@@ -2,10 +2,8 @@ package com.example.unity_backend.Service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.example.unity_backend.Dao.Activity.ActivityDao;
-import com.example.unity_backend.Entity.Activity;
-import com.example.unity_backend.Entity.ActivityVO;
-import com.example.unity_backend.Entity.ParticipateDTO;
-import com.example.unity_backend.Entity.Participation;
+import com.example.unity_backend.Dao.UserInfo.UserInfoDao;
+import com.example.unity_backend.Entity.*;
 import com.example.unity_backend.Utils.JWTUtils.JWTUtil;
 import com.example.unity_backend.Utils.LogUtils.LogUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +21,14 @@ public class ActivityService {
     private ActivityDao activityDao;
     private Authentication authentication;
     private String JWTusername;
+    private LogService logService;
     @Autowired
-    public ActivityService(ActivityDao activityDao1){
+    UserInfoService userInfoService;
+    @Autowired
+    public ActivityService(ActivityDao activityDao1,LogService logService1){
         this.activityDao=activityDao1;
         this.res=new JSONObject();
+        this.logService=logService1;
     }
 
     private void getJWTUsername(){
@@ -59,10 +61,49 @@ public class ActivityService {
     public JSONObject getReward(Activity activity) throws IOException {
         res.clear();
         getJWTUsername();
+        //前端已判断满足条件
         ParticipateDTO participateDTO=new ParticipateDTO();
         participateDTO.setActivityID(activity.getActivityID());
         participateDTO.setUserName(JWTusername);
         activityDao.getReward(participateDTO);
+        //写仓库
+        //1.获取奖励列表
+        List<Reword> rewords=activityDao.getRewardListByActID(activity.getActivityID());
+        //LogUtil.showDebug(rewords.toString());
+        //2.加入仓库
+        ItemLog itemLog=new ItemLog();
+
+        for(Reword reword:rewords){
+            //判断是否为余额，余额走用户信息路线
+            //LogUtil.showDebug(reword.getItemID());
+            if(reword.getItemID().equals("999")){
+                JSONObject balance=userInfoService.getUserBalance();
+                Double Balance=Double.valueOf(balance.getString("balance"));
+                Double after=Balance+Double.valueOf(reword.getItemNum());
+                userInfoService.updateUserBalance(JWTusername,String.valueOf(after));
+                continue;
+            }
+            //是否已拥有，拥有就更新，不拥有就插入
+            String num=userInfoService.getItemNum(reword.getItemID()).getString("num");
+            if(num==null){
+                //LogUtil.showDebug("insert");
+                activityDao.toWarehouse(JWTusername,reword);//插入语句
+
+            }else{
+                //LogUtil.showDebug("update");
+                int before=Integer.valueOf(num);
+                int after=before+Integer.valueOf( reword.getItemNum());
+                userInfoService.setItemNum(reword.getItemID(),String.valueOf(after));
+            }
+
+            //日志
+            itemLog.setDeltaQty(reword.getItemNum());
+            itemLog.setReason("活动领取");
+            itemLog.setUsername(JWTusername);
+            itemLog.setItemID(reword.getItemID());
+            logService.newItemLog(itemLog);
+        }
+
         res.put("status","success");
         return res;
     }
@@ -79,5 +120,20 @@ public class ActivityService {
         activityDao.updateUserProgress(participation);
         res.put("status","success");
         return res;
+    }
+
+    public List<Participation> getParticipationByUsername(String username) throws IOException {
+        List<Participation> participations=activityDao.getParticipationbyUsername(username);
+        return participations;
+    }
+
+    public void updateUserProgress(Participation participation) throws IOException {
+        activityDao.updateUserProgress(participation);
+    }
+
+    public Activity getSingleActivityByID(String ActivityID) throws IOException {
+        Activity activity=null;
+        activity=activityDao.getSingleActivityByID(ActivityID);
+        return activity;
     }
 }

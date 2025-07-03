@@ -82,4 +82,17 @@
         from users
         where UserName=#{username}
     </select>
+
+    <select id="getItemNum" resultType="java.lang.Integer">
+        select COALESCE(Quantity,0) as num
+        from userwarehouse
+        where UserName=#{username} and ItemID=#{itemid}
+    </select>
+
+    <update id="setItemNum">
+        update userwarehouse
+        set Quantity=#{itemnum}
+        where UserName=#{username} and ItemID=#{itemid}
+    </update>
+
 </mapper>

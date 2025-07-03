@@ -2,10 +2,7 @@ package com.example.unity_backend.Dao.Activity;
 
 import com.example.unity_backend.Dao.Mybatis.Mybatis;
 import com.example.unity_backend.Dao.Record.RecordMapper;
-import com.example.unity_backend.Entity.Activity;
-import com.example.unity_backend.Entity.ActivityVO;
-import com.example.unity_backend.Entity.ParticipateDTO;
-import com.example.unity_backend.Entity.Participation;
+import com.example.unity_backend.Entity.*;
 import com.example.unity_backend.Utils.LogUtils.LogUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -22,6 +19,7 @@ public class ActivityDao {
     private Mybatis mybatis;
     private ActivityMapper activityMapper;
     private String module="activities:";
+
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;  // 注入 RedisTemplate
 
@@ -68,9 +66,12 @@ public class ActivityDao {
         return list;
     }
 
+
     public void participate(ParticipateDTO participateDTO) throws IOException {
         openDB();
         activityMapper.participate(participateDTO);
+        String cacheKey = module+participateDTO.getUserName();
+        redisTemplate.delete(cacheKey);
         closeDB();
     }
 
@@ -93,5 +94,36 @@ public class ActivityDao {
         LogUtil.showDebug(participation.toString());
         activityMapper.updateUserProgress(participation);
         closeDB();
+    }
+
+    public List<Reword> getRewardListByActID(String ActivityID) throws IOException {
+        openDB();
+        List<Reword> rewords=activityMapper.getRewordListByActID(ActivityID);
+        closeDB();
+        return rewords;
+    }
+
+    public void toWarehouse(String username,Reword reword) throws IOException {
+        openDB();
+        String cachekey=module+username;
+        redisTemplate.delete(cachekey);
+        //领取过了,是否已领取栏改变
+        //LogUtil.showDebug(reword.getItemID());
+        activityMapper.toWarehouse(username,reword.getItemID(),reword.getItemNum());
+        closeDB();
+    }
+
+    public List<Participation> getParticipationbyUsername(String username) throws IOException {
+        openDB();
+        List<Participation> participation=activityMapper.getParticipationByUsername(username);
+        closeDB();
+        return participation;
+    }
+
+    public Activity getSingleActivityByID(String ActivityID) throws IOException {
+        openDB();
+        Activity activity=activityMapper.getSingleActivityByID(ActivityID);
+        closeDB();
+        return activity;
     }
 }

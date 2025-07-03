@@ -43,7 +43,17 @@ public class UserInfoController {
 
     @GetMapping("/nickname")
     public JSONObject getNicknameByUsername(@RequestParam String username) throws IOException {
-        LogUtil.showDebug(username);
+        //LogUtil.showDebug(username);
         return userInfoService.getNicknameByUsername(username);
+    }
+
+    @GetMapping("/getnum")
+    public JSONObject getItemNUm(@RequestParam("itemid") String itemid) throws IOException {
+        return userInfoService.getItemNum(itemid);
+    }
+
+    @PutMapping("/setnum")
+    public JSONObject setItenNum(@RequestParam("itemid") String itemid,@RequestParam("itemnum") String itemnum) throws IOException {
+        return  userInfoService.setItemNum(itemid,itemnum);
     }
 }

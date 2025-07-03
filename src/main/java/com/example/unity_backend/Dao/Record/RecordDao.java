@@ -36,18 +36,18 @@ public class RecordDao {
         this.mybatis.closeSqlSession();
     }
 
-    public List<GameRecord> getAllGameRecords(String username) throws IOException {
+    public List<GameRecord> getAllGameRecords(String username,String level) throws IOException {
         openDB();
         //recordMapper.getAllGameRecord(username);
         //需要封装成list
-        List<GameRecord> res=recordMapper.getAllGameRecord(username);
+        List<GameRecord> res=recordMapper.getAllGameRecord(username,level);
         closeDB();
         return res;
     }
 
-    public List<GameRecord> getMaxHistoryRecords(String username) throws IOException {
+    public List<GameRecord> getMaxHistoryRecords(String username,String level) throws IOException {
         openDB();
-        List<GameRecord> res=recordMapper.getAllMaxUpdateGameRecord(username);
+        List<GameRecord> res=recordMapper.getAllMaxUpdateGameRecord(username,level);
         closeDB();
         return res;
     }
@@ -76,5 +76,11 @@ public class RecordDao {
         closeDB();
     }
 
+    public float getMincostTime(String username,String level) throws IOException {
+        openDB();
+        float time=recordMapper.getMincostTime(username,level);
+        closeDB();
+        return  time;
+    }
 
 }

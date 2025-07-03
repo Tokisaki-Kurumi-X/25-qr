@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>个人中心</title>
+    <script src="/webjars/jquery/3.7.1/jquery.js"></script>
+    <script src="config.js"></script>
+</head>
+<body>
+    <input id="nickname">
+    <button id="modifyNick">修改昵称</button>
+
+</body>
+</html>
+<script>
+    $(window).on("load",function () {
+        $.ajax({
+            url:config.baseUrl+"user/nickname"
+        })
+    })
+</script>

@@ -15,11 +15,13 @@ public class LoginService {
     private LoginDao loginDao;
     private JSONObject res;
     private JWTUtil jwtUtil;
+    private LogService logService;
     @Autowired
-    public LoginService(LoginDao loginDao1,JWTUtil jwtUtil1){
+    public LoginService(LoginDao loginDao1,JWTUtil jwtUtil1,LogService logService1){
         this.loginDao=loginDao1;
         this.res=new JSONObject();
         this.jwtUtil=jwtUtil1;
+        this.logService=logService1;
     }
 
 
@@ -42,10 +44,11 @@ public class LoginService {
         //LogUtil.showDebug(user.toString());
         user=loginDao.getPassword(user.getUsername());
         //LogUtil.showDebug(user.toString());
-        if(user.getPassword().equals(json.getString("password"))){
+        if(user.getPassword().equals(json.getString("password"))){//允许登录
             res.put("Match","true");
             //JWT
             res.put("JWT",jwtUtil.generateToken(jwtUtil.generateJson(user.getUsername(),"Unity")));
+            logService.newLoginlog(user.getUsername());
         }else {
             res.put("Match","false");
         }

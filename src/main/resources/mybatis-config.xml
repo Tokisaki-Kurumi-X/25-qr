@@ -23,5 +23,6 @@
         <mapper resource="DaoMapper/Record/RecordMapper.xml"/>
         <mapper resource="DaoMapper/UserInfo/UserInfoMapper.xml"/>
         <mapper resource="DaoMapper/Activity/ActivityMapper.xml"/>
+        <mapper resource="DaoMapper/Log/LogMapper.xml"/>
     </mappers>
 </configuration>

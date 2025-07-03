@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -15,6 +16,8 @@ import java.util.List;
 public class UserInfoDao {
     private Mybatis mybatis;
     private UserInfoMapper userInfoMapper;
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;  // 注入 RedisTemplate
 
     @Autowired
     public UserInfoDao(Mybatis mybatis1){
@@ -93,5 +96,20 @@ public class UserInfoDao {
         closeDB();
         return name;
     }
+    //仓库
+    public Integer getItemNum(String username,String itemid) throws IOException {
+        openDB();
+        Integer num=userInfoMapper.getItemNum(username,itemid);
+        closeDB();
+        return num;
+    }
+    //仓库
+    public void setItemNum(String username,String itemid,String itemnum) throws IOException {
+        openDB();
+        userInfoMapper.setItemNum(username,itemid,itemnum);
+        redisTemplate.delete("activities:"+username);
+        closeDB();
+    }
+
 
 }

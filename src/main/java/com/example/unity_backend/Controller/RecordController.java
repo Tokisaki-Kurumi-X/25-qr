@@ -25,11 +25,11 @@ public class RecordController {
     }
 
     @GetMapping("/query")
-    public JSONObject getGameRecords(@RequestParam("type") String type) throws IOException {
+    public JSONObject getGameRecords(@RequestParam("type") String type,@RequestParam("level") String level) throws IOException {
         if (type.equals("normal")) {//get all
-            return recordService.getAllRecords();
+            return recordService.getAllRecords(level);
         } else if (type.equals("max")) {//max all
-            return recordService.getMaxRecords();
+            return recordService.getMaxRecords(level);
         }
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("res_msg", "param is not valid");
