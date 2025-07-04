@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+</head>
+<body>
+    <text>账户</text>
+    <input id="account">
+    <button id="sendcode">发送验证码</button>
+    <input id="code" placeholder="请输入验证码">
+    <button id="verifycode">验证验证码</button>
+    <input id="password" placeholder="请输入新密码">
+    <input id="rePassword" placeholder="请再次输入密码">
+    <button id="reset">更改密码</button>
+</body>
+</html>
+<script src="/webjars/jquery/3.7.1/jquery.js"></script>
+<script src="config.js"></script>
+<script>
+    $(window).on("load",function () {
+        var account=localStorage.getItem("account");
+        $("#account").val(account);
+        $("#account").prop("disabled",true);
+        $("#code").prop("disabled",true);
+        $("#verifycode").prop("disabled",true);
+        $("#password").prop("disabled",true);
+        $("#rePassword").prop("disabled",true);
+        $("#reset").prop("disabled",true);
+    })
+
+    $("#sendCode").click(function () {
+        $.ajax({
+            url:config.baseUrl+"/reset/mail/code?account="+$("#account").val(),
+            method:"put",
+            dataType:"json",
+            success:function (res) {
+                console.log(res);
+            },
+            error:function (err) {
+                alert("网络连接错误！");
+            }
+        })
+    })
+</script>

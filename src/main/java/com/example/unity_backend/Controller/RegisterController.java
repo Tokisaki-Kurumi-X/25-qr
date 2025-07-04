@@ -8,10 +8,7 @@ import com.example.unity_backend.Service.RegisterService;
 import com.example.unity_backend.Utils.LogUtils.LogUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
@@ -49,7 +46,8 @@ public class RegisterController {
                 return registerService.verifyMailAddressbyCode(verifyCode);
         }
 
-        @PostMapping("/nickname")
+        //用不上
+        @PutMapping("/nickname")
         public JSONObject setNickname(@RequestBody User user) throws IOException {
                 return  registerService.setNickname(user);
         }

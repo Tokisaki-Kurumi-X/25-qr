@@ -169,12 +169,6 @@
 <script src="config.js"></script>
 <script>
 
-    $(window).on('load',function () {
-        //console.log("666");
-        $("#account").val(sessionStorage.getItem("account"));
-        $("#password").val(sessionStorage.getItem("password"));
-        // console.log(config.baseUrl);
-    });
     $("#account").on('input',function () {
         sessionStorage.setItem("account",$("#account").val());
     });

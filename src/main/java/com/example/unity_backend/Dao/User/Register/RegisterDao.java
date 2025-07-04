@@ -90,6 +90,7 @@ public class RegisterDao {
         registerMapper.mailConfirm(user.getMailAddress());
         closeDB();
     }
+
     @CacheEvict(value = "userInfo",key="#user.Username")
     public void setNickname(User user) throws IOException {
         openDB();

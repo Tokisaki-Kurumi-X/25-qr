@@ -9,6 +9,8 @@ import com.example.unity_backend.Utils.LogUtils.LogUtil;
 import com.example.unity_backend.Utils.MailUtils.MailUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,9 +23,16 @@ public class RegisterService {
     private MailUtil mailUtil;
     private RegisterDao registerDao;
     private JSONObject res;
+    private Authentication authentication;
+    private String JWTusername;
 
+    private void getJWTUsername(){
+        authentication = SecurityContextHolder.getContext().getAuthentication();
+        this.JWTusername=authentication.getName();
+    }
     @Autowired
     public  RegisterService(RegisterDao registerDao1,MailUtil mailUtil){
+        authentication = SecurityContextHolder.getContext().getAuthentication();
         this.registerDao=registerDao1;
         this.res=new JSONObject();
         this.mailUtil=mailUtil;
@@ -120,15 +129,22 @@ public class RegisterService {
     public JSONObject setNickname(User user) throws IOException {
         res.clear();
         //verify
+        //LogUtil.showDebug(user.toString());
+        getJWTUsername();
+
+        user.setUsername(JWTusername);
         Date expire=getCooltime(user);
-       // LogUtil.showDebug(expire.toString());
+        if(expire==null){
+            LogUtil.showDebug("null date");
+        }
+        //LogUtil.showDebug(expire.toString());
         if(expire.after(new Date(System.currentTimeMillis()))){
             res.put("status","failed");
             res.put("res_msg","Still in cooling-off");
             return res;
         }
         //set
-        user.setChangeNicknameCoolTime(new Date(System.currentTimeMillis()+1000*60*60*24));
+        user.setChangeNickCoolTime(new Date(System.currentTimeMillis()+1000*60*60*24));
         registerDao.setNickname(user);
         res.put("status","success");
         return res;
@@ -136,7 +152,7 @@ public class RegisterService {
 
     private Date getCooltime(User user) throws IOException {
         User user1=registerDao.getUserbyUsername(user.getUsername());
-        //LogUtil.showDebug(user1.toString());
-        return user1.getChangeNicknameCoolTime();
+        LogUtil.showDebug(user1.toString());
+        return user1.getChangeNickCoolTime();
     }
 }

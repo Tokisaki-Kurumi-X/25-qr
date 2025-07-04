@@ -54,7 +54,8 @@
 
     <update id="setNickname">
         update users
-        set NickName=#{NickName}
+        set NickName=#{NickName},
+        changeNickCoolTime=#{changeNickCoolTime}
         where UserName=#{username}
     </update>
 </mapper>

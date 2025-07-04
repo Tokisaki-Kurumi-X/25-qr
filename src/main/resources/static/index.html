@@ -141,6 +141,7 @@
                             if(res.Match==="true"){
                                 alert("登录成功");
                                 localStorage.setItem("JWT",res.JWT);
+                                localStorage.setItem("account",$("#account").val());
                                 //跳转页面
                                 window.location.replace("main.html");
                             }else {

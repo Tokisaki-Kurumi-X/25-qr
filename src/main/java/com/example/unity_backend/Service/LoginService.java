@@ -48,7 +48,9 @@ public class LoginService {
             res.put("Match","true");
             //JWT
             res.put("JWT",jwtUtil.generateToken(jwtUtil.generateJson(user.getUsername(),"Unity")));
+            //登录成功，写日志
             logService.newLoginlog(user.getUsername());
+
         }else {
             res.put("Match","false");
         }

@@ -99,6 +99,7 @@
 
     $("#quit").click(function () {
         localStorage.removeItem("JWT");
+        localStorage.removeItem("account");
         window.location.replace("/index.html");
     });
 

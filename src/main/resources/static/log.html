@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>日志查看</title>
+
+    <!-- 引入 Bootstrap CSS -->
+    <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-KyZXEJxvF+e5B8v2T9lX+Vg6HMWyW4rkFtCwFJbx69UjE5Z5l1JwM+0r4g1+Z8rE"
+            crossorigin="anonymous"
+    >
+
+    <style>
+        body {
+            background-color: #f0f8ff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            font-size: 2.5rem;
+            color: #4e8ef7;
+            text-align: center;
+            margin-top: 30px;
+            margin-bottom: 10px;
+        }
+        .container {
+            width: 80%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
+            padding: 30px;
+            margin-top: 40px;
+            margin-bottom: 40px;
+        }
+        .input-group-custom {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        select#logType {
+            padding: 10px;
+            font-size: 1rem;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            width: 30%;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 1rem;
+            background-color: #4e8ef7;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        button:hover {
+            background-color: #357ac5;
+        }
+        .btn-back {
+            background-color: #f8f9fa;
+            border: 1px solid #4e8ef7;
+            color: #4e8ef7;
+            padding: 10px 20px;
+            font-size: 1rem;
+            border-radius: 5px;
+            display: inline-block;
+            margin-bottom: 20px;
+            margin-left: 10px;
+        }
+        .btn-back:hover {
+            background-color: #4e8ef7;
+            color: white;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 12px;
+            text-align: center;
+            vertical-align: middle;
+        }
+        th {
+            background-color: #4e8ef7;
+            color: white;
+            font-size: 1.1rem;
+        }
+        td {
+            font-size: 1rem;
+            border-top: 1px solid #ddd;
+        }
+        @media (max-width: 768px) {
+            h1 { font-size: 2rem; }
+            .container { width: 95%; }
+            .card { padding: 20px; }
+            select#logType { width: 60%; }
+            button, .btn-back {
+                width: 100%;
+                margin-top: 10px;
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- 返回按钮 -->
+    <div class="d-flex justify-content-start">
+        <button class="btn-back" onclick="window.history.back()">返回</button>
+    </div>
+
+    <div class="card">
+        <h1>日志查看</h1>
+
+        <!-- 自定义输入组 -->
+        <div class="input-group-custom">
+            <label for="logType" class="me-2">选择日志类型：</label>
+            <select id="logType">
+                <option value="balance">余额日志</option>
+                <option value="item">物品日志</option>
+                <option value="login">登录日志</option>
+            </select>
+            <button id="viewLogs">查看日志</button>
+        </div>
+
+        <!-- 数据表格，初始隐藏 -->
+        <table id="logContainer" class="table table-bordered" style="display: none;">
+            <thead></thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+
+<!-- 引入 Bootstrap JS & jQuery -->
+<script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-vp2jr0PsswEvj9uD2F9F47rpp4FFXYAvXz6rHR7lh5j90q5TLy6frBR50kM0+f8D"
+        crossorigin="anonymous"
+></script>
+<script src="/webjars/jquery/3.7.1/jquery.js"></script>
+<script src="config.js"></script>
+
+<!-- 内联业务脚本 -->
+<script>
+    $(function() {
+        const urlMap = {
+            balance: "/log/balance",
+            item:    "/log/item",
+            login:   "/log/login"
+        };
+
+        $("#viewLogs").click(function() {
+            const type = $("#logType").val();
+            const url = config.baseUrl + urlMap[type];
+
+            const $table = $("#logContainer")
+                .hide()
+                .find("thead, tbody").empty().end()
+                .after("<p id='loading'>正在加载...</p>");
+
+            $.ajax({
+                url: url,
+                method: "GET",
+                headers: { "Authorization": localStorage.getItem("JWT") },
+                dataType: "json",
+                success: function(res) {
+                    $("#loading").remove();
+                    const data = res.aaDaa || [];
+                    if (!data.length) {
+                        return alert("暂无日志记录。");
+                    }
+
+                    // 确定字段
+                    let fields;
+                    if (type === "balance") {
+                        fields = ["username","amount","changeType","balanceChange","occurredAt"];
+                    } else if (type === "item") {
+                        fields = ["username","itemName","deltaQty","reason","occurredAt"];
+                    } else {
+                        fields = ["username"].concat(
+                            Object.keys(data[0]).filter(f => f!=="logID"&&f!=="username")
+                        );
+                    }
+                    const headerMap = {
+                        username:"用户名",amount:"变动金额",changeType:"变动类型",
+                        balanceChange:"余额变动",itemName:"物品名称",
+                        deltaQty:"数量变化",reason:"原因",occurredAt:"时间"
+                    };
+
+                    // 生成表头
+                    const $thead = $("#logContainer thead");
+                    const $tr = $("<tr>");
+                    fields.forEach(f => {
+                        $("<th>").text(headerMap[f]||f).appendTo($tr);
+                    });
+                    $thead.append($tr);
+
+                    // 生成表体
+                    const $tbody = $("#logContainer tbody");
+                    data.forEach(item => {
+                        const $row = $("<tr>");
+                        fields.forEach(f => {
+                            let text = "";
+                            if (type==="balance" && f==="balanceChange") {
+                                text = item.balanceBefore+" → "+item.balanceAfter;
+                            } else if (f==="occurredAt") {
+                                const d=new Date(item[f]);
+                                const pad=n=>n.toString().padStart(2,"0");
+                                text = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`
+                                    +` ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+                            } else {
+                                text = item[f]!=null?item[f]:"";
+                            }
+                            $("<td>").text(text).appendTo($row);
+                        });
+                        $tbody.append($row);
+                    });
+
+                    $("#logContainer").show();
+                },
+                error: function(xhr, status, err) {
+                    $("#loading").remove();
+                    console.error("取日志失败：", err);
+                    alert("加载日志失败，请稍后重试。");
+                }
+            });
+        });
+    });
+</script>
+
+</body>
+</html>

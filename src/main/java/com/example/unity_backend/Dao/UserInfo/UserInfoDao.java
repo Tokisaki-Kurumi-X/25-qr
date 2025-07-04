@@ -2,6 +2,7 @@ package com.example.unity_backend.Dao.UserInfo;
 
 import com.example.unity_backend.Dao.Mybatis.Mybatis;
 import com.example.unity_backend.Entity.*;
+import com.example.unity_backend.Utils.LogUtils.LogUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -32,7 +33,7 @@ public class UserInfoDao {
         this.mybatis.closeSqlSession();
     }
 
-
+    @Cacheable(value = "userBalance",key = "#username")
     public User getUserBalance(String username) throws IOException {
         openDB();
         User user=userInfoMapper.getUserBalance(username);
@@ -69,7 +70,7 @@ public class UserInfoDao {
         closeDB();
         return userWarehouse;
     }
-
+    @CacheEvict(value = "storeItem",key = "#userWarehouse.UserName")
     public void updateUserWarehouse(UserWarehouse userWarehouse) throws IOException {
         openDB();
         userInfoMapper.updateUserWarehouse(userWarehouse);
@@ -82,7 +83,7 @@ public class UserInfoDao {
         userInfoMapper.newUserWarehouse(userWarehouse);
         closeDB();
     }
-
+    @CacheEvict(value = "userBalance",key = "#username")
     public void UpdateUserBalance(String username,String balance) throws IOException {
         openDB();
         userInfoMapper.updateUserBalance(username,balance);
@@ -92,6 +93,7 @@ public class UserInfoDao {
     @Cacheable(value = "userInfo",key = "#username")
     public String getNicknamebyUsername(String username) throws IOException {
         openDB();
+        LogUtil.showDebug(username);
         String name=userInfoMapper.getNicknamebyUsername(username);
         closeDB();
         return name;

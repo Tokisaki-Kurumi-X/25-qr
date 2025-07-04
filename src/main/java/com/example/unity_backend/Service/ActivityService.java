@@ -78,9 +78,17 @@ public class ActivityService {
             //LogUtil.showDebug(reword.getItemID());
             if(reword.getItemID().equals("999")){
                 JSONObject balance=userInfoService.getUserBalance();
-                Double Balance=Double.valueOf(balance.getString("balance"));
+                Double Balance=Double.valueOf(balance.getString("balance"));//before
                 Double after=Balance+Double.valueOf(reword.getItemNum());
                 userInfoService.updateUserBalance(JWTusername,String.valueOf(after));
+                //写余额日志
+                BalanceLog balanceLog=new BalanceLog();
+                balanceLog.setChangeType("活动领取");
+                balanceLog.setUsername(JWTusername);
+                balanceLog.setBalanceBefore(String.valueOf(Balance));
+                balanceLog.setBalanceAfter(String.valueOf(after));
+                balanceLog.setAmount("+"+reword.getItemNum());
+                logService.newBalanceLog(balanceLog);
                 continue;
             }
             //是否已拥有，拥有就更新，不拥有就插入
@@ -97,7 +105,7 @@ public class ActivityService {
             }
 
             //日志
-            itemLog.setDeltaQty(reword.getItemNum());
+            itemLog.setDeltaQty("+"+reword.getItemNum());
             itemLog.setReason("活动领取");
             itemLog.setUsername(JWTusername);
             itemLog.setItemID(reword.getItemID());

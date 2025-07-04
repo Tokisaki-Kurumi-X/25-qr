@@ -3,6 +3,8 @@ package com.example.unity_backend.Controller;
 import com.alibaba.fastjson.JSONObject;
 import com.example.unity_backend.Dao.Db.Db;
 import com.example.unity_backend.Entity.StoreItemVO;
+import com.example.unity_backend.Entity.User;
+import com.example.unity_backend.Service.RegisterService;
 import com.example.unity_backend.Service.UserInfoService;
 import com.example.unity_backend.Utils.LogUtils.LogUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +16,8 @@ import java.io.IOException;
 @RequestMapping("/user")
 public class UserInfoController {
     private UserInfoService userInfoService;
-
+    @Autowired
+    private RegisterService registerService;
     @Autowired
     public UserInfoController(UserInfoService userInfoService1){
         this.userInfoService=userInfoService1;
@@ -42,9 +45,9 @@ public class UserInfoController {
     }
 
     @GetMapping("/nickname")
-    public JSONObject getNicknameByUsername(@RequestParam String username) throws IOException {
+    public JSONObject getNicknameByUsername() throws IOException {
         //LogUtil.showDebug(username);
-        return userInfoService.getNicknameByUsername(username);
+        return userInfoService.getNicknameByUsername();
     }
 
     @GetMapping("/getnum")
@@ -55,5 +58,11 @@ public class UserInfoController {
     @PutMapping("/setnum")
     public JSONObject setItenNum(@RequestParam("itemid") String itemid,@RequestParam("itemnum") String itemnum) throws IOException {
         return  userInfoService.setItemNum(itemid,itemnum);
+    }
+
+    @PutMapping("/setNickname")
+    public JSONObject setNickName(@RequestBody User user) throws IOException {
+
+         return  registerService.setNickname(user);
     }
 }

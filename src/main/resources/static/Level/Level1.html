@@ -180,52 +180,58 @@
     // 游戏开始
     startBtn.addEventListener("click", startGame);
 
-    // 游戏开始函数
+
+
     function startGame() {
-        checked=1;
-        $.ajax({
-            url:config.baseUrl+"/user/getnum?itemid=2",
-            method: "get",
-            headers:{"Authorization":localStorage.getItem("JWT")},
-            success:function (res) {
-                if(res.num!=null&&res.num>0){
-                    var modifynum=res.num-1;
-                    if(confirm("是否使用包过卡\n当前剩余:"+res.num)){
-                        $.ajax({
-                            url:config.baseUrl+"/user/setnum?itemid=2&itemnum="+modifynum,
-                            method:"put",
-                            headers:{"Authorization":localStorage.getItem("JWT")},
-                            success:function (res) {
-                                if(res.status==="success"){
-                                    alert("成功使用包过卡");
-                                    checked=0;
-                                }
-                                startTimer();
-                            },
-                            error:function () {
-                                alert("网络连接错误");
-                            }
-                        })
-
-                    }
-                }
-            }
-        })
-
-
-        startBtn.disabled = true;
+        // 先统一禁用按钮和初始化界面
+        startBtn.disabled   = true;
         endBtn.style.display = "inline-block";
+        endBtn.disabled      = true;   // 等打完才真正可点
         inputElement.disabled = false;
-        inputElement.value = ""; // 清空输入框
-        currentIndex = 0;
-        textElement.textContent = sampleText;
+        inputElement.value   = "";
+        currentIndex         = 0;
+        textElement.textContent     = sampleText;
         progressElement.textContent = "进度: 0%";
-        timerElement.textContent = "时间: 0秒";
-        startTime = Date.now(); // 记录开始时间
-
+        timerElement.textContent    = "时间: 0秒";
         inputElement.focus();
-        //包过卡逻辑
 
+        // 检查“包过卡”逻辑
+        $.ajax({
+            url: config.baseUrl + "/user/getnum?itemid=2",
+            method: "get",
+            headers: { "Authorization": localStorage.getItem("JWT") },
+            success: function(res) {
+                // 如果有包过卡，则弹窗询问
+                if (res.num > 0 && confirm("是否使用包过卡？\n当前剩余: " + res.num)) {
+                    const newNum = res.num - 1;
+                    $.ajax({
+                        url: config.baseUrl + "/user/setnum?itemid=2&itemnum=" + newNum,
+                        method: "put",
+                        headers: { "Authorization": localStorage.getItem("JWT") },
+                        success: function(resp) {
+                            if (resp.status === "success") {
+                                alert("成功使用包过卡");
+                                checked = 0;  // 标记不计错
+                            }
+                            // 确认后再真正启动计时
+                            beginTyping();
+                        },
+                        error: function() {
+                            alert("网络连接错误");
+                            // 即使失败，也允许开始
+                            beginTyping();
+                        }
+                    });
+                } else {
+                    // 不使用包过卡，直接开始
+                    beginTyping();
+                }
+            },
+            error: function() {
+                alert("网络错误，直接开始");
+                beginTyping();
+            }
+        });
     }
 
     // 启动计时器
@@ -234,6 +240,19 @@
             const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
             timerElement.textContent = `时间: ${elapsedTime}秒`;
         }, 1000);
+    }
+    // 统一的“开始打字并计时”方法
+    function beginTyping() {
+        // 记录真正的开始时刻
+        startTime = Date.now();
+        // 启动高精度秒表，每100ms 更新一次
+        timerInterval = setInterval(() => {
+            const elapsedMs = Date.now() - startTime;
+            const elapsedSec = (elapsedMs / 1000).toFixed(2);  // 转成 x.xx
+            timerElement.textContent = `时间: ${elapsedSec}秒`;
+        }, 100);
+        // 启用结束按钮
+        endBtn.disabled = false;
     }
 
     // 游戏结束函数

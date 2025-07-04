@@ -18,7 +18,6 @@ public class Whitelist {
             // 如果后续有更多路径，只要加到这里就行
             "/public/**",
             "/register.html",
-            "/user/nickname",
             "/test.html",
             "/config.js",
             "/index.html",
@@ -29,7 +28,9 @@ public class Whitelist {
             "/activity.html",
             "/store.html",
             "/warehouse.html",
-            "/userinfo.html"
+            "/userinfo.html",
+            "/log.html",
+            "/reset.html"
     );
 
     public List<String> getPatterns() {

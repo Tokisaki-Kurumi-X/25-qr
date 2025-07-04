@@ -22,6 +22,8 @@ public class UserInfoService {
     private Authentication authentication;
     private String JWTusername;
     @Autowired
+    private  LogService logService;
+    @Autowired
     private HttpServletRequest httpServletRequest;
     @Autowired
     public  UserInfoService(UserInfoDao userInfoDao1){
@@ -65,11 +67,11 @@ public class UserInfoService {
         res.clear();
         getJWTUsername();
         double price=getPrice(storeItemVO);
-
+        //判断余额
         JSONObject balance=getUserBalance();
-        Double Balance=Double.valueOf(balance.getString("balance"));
+        Double beforeBalance=Double.valueOf(balance.getString("balance"));
         res.remove("balance");
-        if(Balance<price){
+        if(beforeBalance<price){
             res.put("status","failed");
             res.put("res_msg","balance invalid");
             return  res;
@@ -92,8 +94,22 @@ public class UserInfoService {
             userInfoDao.newUserWarehouse(userWarehouse);
         }
         //扣减余额
-        Balance=Balance-price;
-        userInfoDao.UpdateUserBalance(JWTusername,String.valueOf(Balance));
+        Double afterBalance=beforeBalance-price;
+        userInfoDao.UpdateUserBalance(JWTusername,String.valueOf(afterBalance));
+        //日志：余额+物品
+        ItemLog itemLog=new ItemLog();
+        itemLog.setItemID(storeItemVO.getItemID());
+        itemLog.setUsername(JWTusername);
+        itemLog.setDeltaQty("+"+storeItemVO.getQuantity());
+        itemLog.setReason("商城购买");
+        logService.newItemLog(itemLog);
+        BalanceLog balanceLog=new BalanceLog();
+        balanceLog.setAmount(String.valueOf(-price));
+        balanceLog.setBalanceBefore(String.valueOf(beforeBalance));
+        balanceLog.setBalanceAfter(String.valueOf(afterBalance));
+        balanceLog.setUsername(JWTusername);
+        balanceLog.setChangeType("商城消费");
+        logService.newBalanceLog(balanceLog);
 
         res.put("status","success");
         return res;
@@ -108,10 +124,11 @@ public class UserInfoService {
         return price;
     }
 
-    public JSONObject getNicknameByUsername(String username) throws IOException {
+    public JSONObject getNicknameByUsername() throws IOException {
         res.clear();
-        String nickname=userInfoDao.getNicknamebyUsername(username);
-        LogUtil.showDebug(IPUtil.getIpAddress(httpServletRequest));
+        getJWTUsername();
+        String nickname=userInfoDao.getNicknamebyUsername(JWTusername);
+        //LogUtil.showDebug(IPUtil.getIpAddress(httpServletRequest));
         res.put("nickname",nickname);
         return res;
     }
@@ -130,6 +147,13 @@ public class UserInfoService {
         res.clear();
         getJWTUsername();
         userInfoDao.setItemNum(JWTusername,itemID,itemnum);
+        //使用了道具，写日志
+        ItemLog itemLog=new ItemLog();
+        itemLog.setReason("关卡使用");
+        itemLog.setDeltaQty("-"+"1");
+        itemLog.setUsername(JWTusername);
+        itemLog.setItemID(itemID);
+        logService.newItemLog(itemLog);
         res.put("status","success");
         return res;
     }
