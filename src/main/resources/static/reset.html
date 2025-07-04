@@ -1,166 +1,270 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>重置密码</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        /* 简单的样式提示 */
+        body {
+            background-color: #f0f8ff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .card {
+            width: 100%;
+            max-width: 480px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            padding: 30px;
+            position: relative;
+            background-color: #fff;
+        }
+        .btn-back {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 0 16px;
+            height: 50px;
+            line-height: 50px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            border: 1px solid #4e8ef7;
+            background-color: #f8f9fa;
+            color: #4e8ef7;
+            transition: all 0.3s ease;
+        }
+        .btn-back:hover {
+            background-color: #4e8ef7;
+            color: #fff;
+            transform: translateY(-1px);
+        }
+        h2 {
+            color: #4e8ef7;
+            text-align: center;
+            margin: 40px 0 30px;
+            font-weight: 600;
+        }
+
+        /* 统一输入框和按钮高度 */
+        .form-control,
+        .btn {
+            height: 50px;
+            line-height: 50px;
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+
+        .form-control {
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            font-size: 1rem;
+        }
+        .btn-secondary {
+            border-radius: 5px;
+            background-color: #f8f9fa;
+            border: 1px solid #4e8ef7;
+            color: #4e8ef7;
+            transition: all 0.3s ease;
+        }
+        .btn-secondary:hover {
+            background-color: #4e8ef7;
+            color: #fff;
+        }
+        .btn-primary {
+            border-radius: 5px;
+            background-color: #4e8ef7;
+            border: none;
+            color: #fff;
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            background-color: #357ac5;
+        }
         #pwd-match-msg {
-            display: block;
-            margin-top: 4px;
-            font-size: 0.9em;
+            font-size: 0.9rem;
+            height: 1.2em;
+            margin-bottom: 20px;
+        }
+        @media (max-width: 576px) {
+            .btn-back {
+                position: static;
+                display: block;
+                width: 100%;
+                margin-bottom: 15px;
+                text-align: center;
+            }
+            h2 {
+                margin: 20px 0;
+            }
         }
     </style>
 </head>
 <body>
-    <text>账户</text>
-    <input id="account">
-    <button id="sendcode">发送验证码</button>
-    <input id="code" placeholder="请输入验证码">
-    <button id="verifycode">验证验证码</button>
-    <input id="password" placeholder="请输入新密码" type="password">
-    <input id="rePassword" placeholder="请再次输入密码" type="password">
-    <button id="reset">更改密码</button>
-</body>
-</html>
+
+<div class="card">
+    <button class="btn-back" onclick="window.history.back()">← 返回</button>
+    <h2>重置密码</h2>
+
+
+
+    <!-- 发送验证码 -->
+    <div class="row g-2 mb-3">
+        <div class="col-8">
+            <input id="sendCodeEmail" type="text" class="form-control" placeholder="请输入邮箱/用户名">
+        </div>
+        <div class="col-4">
+            <button id="sendCode" class="btn btn-secondary w-100">发送验证码</button>
+        </div>
+    </div>
+
+    <!-- 验证码输入 + 验证按钮 -->
+    <div class="row g-2 mb-3">
+        <div class="col-8">
+            <input id="code" type="text" class="form-control" placeholder="请输入验证码" disabled>
+        </div>
+        <div class="col-4">
+            <button id="verifyCode" class="btn btn-primary w-100" disabled>验证验证码</button>
+        </div>
+    </div>
+
+    <!-- 新密码 -->
+    <div class="mb-3">
+        <input id="password" type="password" class="form-control" placeholder="请输入新密码" disabled>
+    </div>
+    <div class="mb-3">
+        <input id="rePassword" type="password" class="form-control" placeholder="请再次输入密码" disabled>
+    </div>
+    <div id="pwd-match-msg" class="text-center"></div>
+
+    <!-- 重置密码按钮 -->
+    <div class="mb-3">
+        <button id="reset" class="btn btn-primary w-100" disabled>更改密码</button>
+    </div>
+</div>
+
+<!-- Bootstrap JS & jQuery -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="/webjars/jquery/3.7.1/jquery.js"></script>
 <script src="config.js"></script>
 <script>
-    var codeErrorTimes=0;
-    $(window).on("load",function () {
-        //个人中心进入时，下行启用开始
+    let errorCount = 0;
+
+    $(function() {
+        // 初始状态
+        $('#code, #verifyCode, #password, #rePassword, #reset').prop('disabled', true);
         var account=localStorage.getItem("account");
-        $("#account").val(account);
-        $("#account").prop("disabled",true);
-        //启用结束
-        $("#code").prop("disabled",true);
-        $("#verifycode").prop("disabled",true);
-        $("#password").prop("disabled",true);
-        $("#rePassword").prop("disabled",true);
-        $("#reset").prop("disabled",true);
-    })
+        $("#sendCodeEmail").val(account);
+        $("#sendCodeEmail").prop('disabled', true);
+    });
 
-    $("#sendcode").click(function () {
-        //console.log(1);
-        $.ajax({
-            url:config.baseUrl+"/reset/mail/code?account="+$("#account").val(),
-            method:"put",
-            dataType:"json",
-            success:function (res) {
-                console.log(res);
-                if(res.status==="success"){
-                    alert("验证码已发送！");
-                    $("#sendcode").prop("disabled",true);
-                    $("#code").prop("disabled",false);
-                    $("#verifycode").prop("disabled",false);
-                }else {
-                    alert("账户不存在");
-                }
-            },
-            error:function (err) {
-                alert("邮箱格式错误");
-            }
-        })
-    })
 
-    $("#verifycode").click(function () {
-        var Code=$("#code").val();
-        if(!Code){
-            alert("验证码不能为空!");
+
+    // 发送验证码
+    $('#sendCode').click(function() {
+        var acct = $("#sendCodeEmail").val();
+        if(!acct){
+            alert("账户不可为空");
             return;
         }
         $.ajax({
-            url:config.baseUrl+"/reset/mail/verify?code="+Code+"&account="+$("#account").val(),
-            method: "get",
+            url: config.baseUrl+"/reset/mail/code?account="+acct,
+            method: 'PUT',
             success:function (res) {
-                console.log(res);
-                if(res.isMatch==="true"){
-                    alert("验证成功");
-                    $("#password").prop("disabled",false);
-                    $("#rePassword").prop("disabled",false);
-                    $("#reset").prop("disabled",false);
-                    $("#verifycode").prop("disabled",true);
-                }else {
-                    if(res.status==="invalid"){
-                        alert("验证码错误，请重新输入");
-                        codeErrorTimes++;
-                        if(codeErrorTimes===3){
-                            alert("已错误三次，请重新获取验证码");
-                            $("#sendcode").prop("disabled",false);
-                            $("#code").prop("disabled",true);
-                            $("#verifycode").prop("disabled",true);
-                        }
-                    }else {
-                        alert("验证码过期，请重新获取验证码");
-                        $("#sendcode").prop("disabled",false);
-                        $("#code").prop("disabled",true);
-                        $("#verifycode").prop("disabled",true);
+                if (res.status === 'success') {
+                    alert('验证码已发送！');
+                    //$("#sendCodeEmail").prop('disabled', true);
+                    $('#sendCode').prop('disabled', true);
+                    $('#code, #verifyCode').prop('disabled', false);
+                } else {
+                    alert('账户不存在');
+                }
+            },
+            error:function (err) {
+                alert('邮箱格式错误');
+            }
+
+        });
+    });
+
+    // 验证验证码
+    $('#verifyCode').click(function() {
+        const code = $('#code').val().trim();
+        const acct = $('#sendCodeEmail').val().trim();
+        if (!code) { alert('请输入验证码'); return; }
+        $.ajax({
+            url: `${config.baseUrl}/reset/mail/verify?code=${code}&account=${acct}`,
+            method: 'GET',
+            success(res) {
+                if (res.isMatch === 'true') {
+                    alert('验证成功');
+                    $('#verifyCode').prop('disabled', true);
+                    $('#password, #rePassword').prop('disabled', false);
+                } else {
+                    errorCount++;
+                    alert(res.status === 'invalid' ? '验证码错误' : '验证码过期，请重新获取');
+                    if (errorCount >= 3 || res.status !== 'invalid') {
+                        $('#sendCode').prop('disabled', false);
+                        $('#code, #verifyCode').prop('disabled', true);
+                        errorCount = 0;
                     }
                 }
             }
-        })
-    })
+        });
+    });
 
-    $("#reset").click(function () {
-        $("#reset").prop("disabled",true);
-        //已经校验过
-        $.ajax({
-            url:config.baseUrl+"/reset/password",
-            method:"put",
-            contentType: "application/json; charset=UTF-8",
-            dataType: "json",
-            data:JSON.stringify({
-                "account":$("#account").val(),
-                "password":$("#password").val()
-            }),
-            success:function (res) {
-                if(res.status==="success"){
-                    alert("修改密码成功！");
-                    localStorage.removeItem("JWT");
-                    localStorage.removeItem("account");
-                    sessionStorage.removeItem("password");
-                    //主页返回即可
-                    //window.history.back();
-                    window.location.replace("/index.html");
-                }
-            },
-            error:function (err) {
-                alert("网络连接错误");
-                $("#reset").prop("disabled",false);
-            }
-        })
-    })
-
-    function checkPasswords() {
-        var pwd = $("#password").val();
-        var rpt = $("#rePassword").val();
-        var $msg = $("#pwd-match-msg");
-        var $btn = $("#reset");
-
-        // 如果任意一项为空，则清空提示并禁用按钮
-        if (!pwd || !rpt) {
-            $msg.text("");
-            $btn.prop("disabled", true);
-            return;
+    // 实时密码匹配
+    function checkMatch() {
+        const p1 = $('#password').val();
+        const p2 = $('#rePassword').val();
+        const $msg = $('#pwd-match-msg');
+        const $btn = $('#reset');
+        if (!p1 || !p2) {
+            $msg.text('');
+            return $btn.prop('disabled', true);
         }
-
-        // // 长度校验
-        // if (pwd.length < 6) {
-        //     $msg.text("密码至少 6 位").css("color", "orange");
-        //     $btn.prop("disabled", true);
-        //     return;
-        // }
-
-        // 匹配校验
-        if (pwd === rpt) {
-            $msg.text("✓ 两次输入一致").css("color", "green");
-            $btn.prop("disabled", false);
+        if (p1 === p2) {
+            $msg.text('✓ 两次输入一致').css('color', 'green');
+            $btn.prop('disabled', false);
         } else {
-            $msg.text("✗ 两次输入不一致").css("color", "red");
-            $btn.prop("disabled", true);
+            $msg.text('✗ 两次输入不一致').css('color', 'red');
+            $btn.prop('disabled', true);
         }
     }
+    $('#password, #rePassword').on('input', checkMatch);
 
-    // 监听 input 事件，实时触发校验
-    $("#password, #rePassword").on("input", checkPasswords);
+    // 提交新密码
+    $('#reset').click(function() {
+        const acct = $('#sendCodeEmail').val().trim();
+        const pwd = $('#password').val();
+        $(this).prop('disabled', true);
+        $.ajax({
+            url: `${config.baseUrl}/reset/password`,
+            method: 'PUT',
+            contentType: 'application/json',
+            data: JSON.stringify({ account: acct, password: pwd }),
+            success(res) {
+                if (res.status === 'success') {
+                    alert('修改成功');
+                    localStorage.removeItem('JWT');
+                    localStorage.removeItem('account');
+                    window.history.back();
+                } else {
+                    alert('修改失败');
+                    $('#reset').prop('disabled', false);
+                }
+            },
+            error() {
+                alert('网络错误');
+                $('#reset').prop('disabled', false);
+            }
+        });
+    });
 </script>
+</body>
+</html>
