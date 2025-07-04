@@ -56,6 +56,18 @@
             background-color: #357ac5;
         }
 
+        #forgot {
+            background-color: transparent;
+            border: none;
+            color: #4e8ef7;
+            text-decoration: underline;
+            font-size: 0.9rem;
+        }
+
+        #forgot:hover {
+            color: #357ac5;
+        }
+
         #register {
             background-color: #f8f9fa;
             border: 1px solid #4e8ef7;
@@ -88,6 +100,7 @@
         <input id="password" type="password" placeholder="请输入密码">
         <button id="login">登录</button>
         <button id="register">注册</button>
+        <button id="forgot">忘记密码</button>
     </div>
 </div>
 
@@ -96,19 +109,18 @@
 <script src="/webjars/jquery/3.7.1/jquery.js"></script>
 <script src="config.js"></script>
 <script>
-
-    $(window).on('load',function () {
-        //console.log("666");
+    $(window).on('load', function () {
         $("#account").val(sessionStorage.getItem("account"));
         $("#password").val(sessionStorage.getItem("password"));
-        // console.log(config.baseUrl);
     });
-    $("#account").on('input',function () {
-        sessionStorage.setItem("account",$("#account").val());
+
+    $("#account").on('input', function () {
+        sessionStorage.setItem("account", $(this).val());
     });
-    $("#password").on('input',function () {
-        sessionStorage.setItem("password",$("#password").val());
+    $("#password").on('input', function () {
+        sessionStorage.setItem("password", $(this).val());
     });
+
     $("#login").click(function () {
         var account=$("#account").val();
         var password=$("#password").val();
@@ -160,9 +172,15 @@
         })
     })
 
+    // “忘记密码”按钮点击跳转
+    $("#forgot").click(function () {
+        window.location.href = "reset_main.html";  // 请根据实际路径修改
+    });
+
     $("#register").click(function () {
-        window.location.href="register.html";
-    })
+        window.location.href = "register.html";
+    });
 </script>
 </body>
 </html>
+

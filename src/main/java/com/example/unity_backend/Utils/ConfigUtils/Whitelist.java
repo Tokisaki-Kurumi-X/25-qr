@@ -30,7 +30,9 @@ public class Whitelist {
             "/warehouse.html",
             "/userinfo.html",
             "/log.html",
-            "/reset.html"
+            "/reset.html",
+            "/reset/**",
+            "/reset_main.html"
     );
 
     public List<String> getPatterns() {

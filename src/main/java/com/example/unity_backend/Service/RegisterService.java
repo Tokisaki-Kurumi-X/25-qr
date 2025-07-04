@@ -103,8 +103,8 @@ public class RegisterService {
     public JSONObject verifyMailAddressbyCode(VerifyCode verifyCode) throws IOException {
         res.clear();
         VerifyCode resCode=registerDao.getVerifyCodebyMail(verifyCode.getMailAddress());
-        LogUtil.showDebug("rescode: "+resCode.toString());
-        LogUtil.showDebug("current: "+verifyCode);
+        //LogUtil.showDebug("rescode: "+resCode.toString());
+        //LogUtil.showDebug("current: "+verifyCode);
         //1.判断是否过期
         Date now= new Date(System.currentTimeMillis());
         LogUtil.showDebug("now: "+now);

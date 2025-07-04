@@ -24,5 +24,6 @@
         <mapper resource="DaoMapper/UserInfo/UserInfoMapper.xml"/>
         <mapper resource="DaoMapper/Activity/ActivityMapper.xml"/>
         <mapper resource="DaoMapper/Log/LogMapper.xml"/>
+        <mapper resource="DaoMapper/ResetPW/ResetPWMapper.xml"/>
     </mappers>
 </configuration>

@@ -30,11 +30,18 @@ public class LoginService {
         //LogUtil.showDebug(account);
         User user=loginDao.getUserByAccount(account);
         if(user!=null){
+
             res.put("isExist","true");
         }else {
             res.put("isExist","false");
         }
         return res;
+    }
+
+    //供ResetPWService/sendCode()使用
+    public User getUserByAccount(String account) throws IOException {
+        User user=loginDao.getUserByAccount(account);
+        return user;
     }
 
     public JSONObject VerifyPassword(JSONObject json) throws Exception {

@@ -32,7 +32,7 @@
         Insert into users
         (MailAddress,Username,Password,NickName,changeNicknameCoolTime)
         values
-        (#{mail},#{name},#{password},#{NickName},0)
+        (#{mail},#{name},#{password},#{name},0)
     </insert>
 
     <insert id="newUserRole">
