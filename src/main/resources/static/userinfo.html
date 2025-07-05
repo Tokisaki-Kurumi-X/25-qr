@@ -170,27 +170,30 @@
 
 <script>
     $(window).on("load", function () {
-        // 拉取昵称
+        // 拉取昵称（同步）
         $.ajax({
             url: config.baseUrl + "/user/nickname",
             method: "GET",
             headers: { "Authorization": localStorage.getItem("JWT") },
             dataType: "json",
+            async: false,              // ← 加这一行
             success: function(res) {
                 $("#nickname").val(res.nickname);
             }
         });
-        // 拉取余额
+        // 拉取余额（同步）
         $.ajax({
             url: config.baseUrl + "/user/balance",
             method: "GET",
             headers: { "Authorization": localStorage.getItem("JWT") },
             dataType: "json",
+            async: false,              // ← 加这一行
             success: function(res) {
                 $("#balance").val(res.balance);
             }
         });
     });
+
     // 修改密码按钮跳转
     $("#resetPwd").click(function() {
         window.location.href = "/reset.html";

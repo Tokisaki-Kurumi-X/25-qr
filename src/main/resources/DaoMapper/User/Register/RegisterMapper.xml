@@ -30,9 +30,9 @@
 
     <insert id="newUser">
         Insert into users
-        (MailAddress,Username,Password,NickName,changeNicknameCoolTime)
+        (MailAddress,Username,Password,NickName,changeNickCoolTime)
         values
-        (#{mail},#{name},#{password},#{name},0)
+        (#{mail},#{name},#{password},#{name},FROM_UNIXTIME(0))
     </insert>
 
     <insert id="newUserRole">

@@ -253,7 +253,7 @@
                     alert('修改成功');
                     localStorage.removeItem('JWT');
                     localStorage.removeItem('account');
-                    window.history.back();
+                    window.location.replace("/index.html");
                 } else {
                     alert('修改失败');
                     $('#reset').prop('disabled', false);

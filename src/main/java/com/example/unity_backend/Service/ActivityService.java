@@ -7,6 +7,7 @@ import com.example.unity_backend.Entity.*;
 import com.example.unity_backend.Utils.JWTUtils.JWTUtil;
 import com.example.unity_backend.Utils.LogUtils.LogUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -134,7 +135,7 @@ public class ActivityService {
         List<Participation> participations=activityDao.getParticipationbyUsername(username);
         return participations;
     }
-
+   // @CacheEvict
     public void updateUserProgress(Participation participation) throws IOException {
         activityDao.updateUserProgress(participation);
     }
