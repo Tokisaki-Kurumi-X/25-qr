@@ -26,7 +26,7 @@
 
     <select id="getUserWareHouse" resultMap="WarehouseVO" parameterType="java.lang.String">
         select *
-        from UserWarehouse as u join Item as i on u.ItemID=i.ItemID
+        from userwarehouse as u join item as i on u.ItemID=i.ItemID
         where u.UserName=#{username}
     </select>
 
@@ -38,8 +38,8 @@
         i.CurrentDiscount,
         i.isDuplicate,
         CASE WHEN uw.ItemID IS NOT NULL THEN 1 ELSE 0 END AS is_owned
-        FROM Item i
-        LEFT JOIN UserWarehouse uw
+        FROM item i
+        LEFT JOIN userwarehouse uw
         ON i.ItemID = uw.ItemID
         AND uw.UserName = #{userName}
     </select>

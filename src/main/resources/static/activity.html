@@ -219,7 +219,7 @@
         $.each(res.aaData, function (index, activity) {
             const userProgress = Number(activity.userCurrentProgress);  // 转换为数字
             const totalProgress = Number(activity.actTotalProgress);    // 转换为数字
-            const rewardButtonEnabled = (activity.hasGetReward === "0") && (userProgress >= totalProgress);
+            const rewardButtonEnabled = (activity.hasGetReward === "0") && (userProgress >= totalProgress)&&(activity.username!="无参与");
             const row = `
                 <tr data-id="${activity.activityID}">
                     <td>${activity.actName}</td>

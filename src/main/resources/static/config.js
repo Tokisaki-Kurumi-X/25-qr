@@ -4,6 +4,6 @@ const config = {
     themeColor: "blue",
     language: "en",
     itemsPerPage: 10,
-    baseUrl:"https://localhost:8080",
+    baseUrl:"https://8.137.80.34",
 
 };

@@ -5,11 +5,11 @@
 <mapper namespace="com.example.unity_backend.Dao.Record.RecordMapper">
 
     <select id="getAllGameRecord" resultType="com.example.unity_backend.Entity.GameRecord">
-        select * from GameRecords where Username= #{username} and Level=#{level} order by PlayTime DESC
+        select * from gamerecords where Username= #{username} and Level=#{level} order by PlayTime DESC
     </select>
 
     <select id="getAllMaxUpdateGameRecord" resultType="com.example.unity_backend.Entity.GameRecord">
-        select * from GameRecords where Username= #{username} and isMaximumUpdate = "1" and Level=#{level} order by PlayTime DESC
+        select * from gamerecords where Username= #{username} and isMaximumUpdate = "1" and Level=#{level} order by PlayTime DESC
     </select>
 
     <select id="getMaxGrade" resultType="java.lang.Float">
